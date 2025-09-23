@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template Manager - Admin</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material.min.css" rel="stylesheet">
+    <style>
+        .template-preview {
+            min-height: 400px;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+        }
+        .code-editor {
+            height: 300px;
+        }
+        .sidebar {
+            height: 100vh;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+        }
+        .main-content {
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .template-item {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .template-item:hover {
+            background-color: #e9ecef;
+        }
+        .template-item.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        .variable-input-group {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #f8f9fa;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 400px;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div class="text-center mb-4">
+                <i class="fas fa-envelope-open fa-3x text-primary mb-3"></i>
+                <h2>Email Template Manager</h2>
+                <p class="text-muted">Admin Access Required</p>
+            </div>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100" id="loginBtn">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </button>
+            </form>
+            <div id="loginError" class="alert alert-danger mt-3 hidden"></div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="hidden">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-3 sidebar p-0">
+                    <div class="p-3 border-bottom">
+                        <h5 class="mb-0">
+                            <i class="fas fa-envelope-open me-2"></i>
+                            Template Manager
+                        </h5>
+                        <small class="text-muted" id="userInfo"></small>
+                    </div>
+
+                    <div class="p-3">
+                        <button class="btn btn-success w-100 mb-3" onclick="createNewTemplate()">
+                            <i class="fas fa-plus me-2"></i>New Template
+                        </button>
+
+                        <div class="mb-3">
+                            <label class="form-label">Filter by Type:</label>
+                            <select class="form-select" id="typeFilter" onchange="loadTemplates()">
+                                <option value="">All Types</option>
+                                <option value="VERIFICATION">Verification</option>
+                                <option value="WELCOME">Welcome</option>
+                                <option value="PASSWORD_RESET">Password Reset</option>
+                                <option value="NOTIFICATION">Notification</option>
+                                <option value="NEWSLETTER">Newsletter</option>
+                                <option value="INVOICE">Invoice</option>
+                                <option value="REMINDER">Reminder</option>
+                                <option value="PROMOTIONAL">Promotional</option>
+                                <option value="TRANSACTIONAL">Transactional</option>
+                                <option value="SYSTEM">System</option>
+                                <option value="CUSTOM">Custom</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Templates:</span>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="loadTemplates()" title="Refresh">
+                                    <i class="fas fa-refresh"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="templateList">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                Loading templates...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto p-3 border-top">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-danger btn-sm" onclick="logout()">
+                                <i class="fas fa-sign-out-alt me-1"></i>Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-md-9 main-content">
+                    <div class="p-4">
+                        <!-- Welcome Message -->
+                        <div id="welcomeMessage" class="text-center py-5">
+                            <i class="fas fa-envelope-open fa-4x text-muted mb-3"></i>
+                            <h3>Welcome to Email Template Manager</h3>
+                            <p class="text-muted">Select a template from the sidebar to edit, or create a new one.</p>
+                        </div>
+
+                        <!-- Template Editor -->
+                        <div id="templateEditor" class="hidden">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 id="editorTitle">Template Editor</h3>
+                                <div>
+                                    <button class="btn btn-outline-primary me-2" onclick="previewTemplate()">
+                                        <i class="fas fa-eye me-1"></i>Preview
+                                    </button>
+                                    <button class="btn btn-outline-danger me-2 hidden" onclick="deleteTemplate()" id="deleteBtn" title="Delete this template permanently">
+                                        <i class="fas fa-trash me-1"></i>Delete
+                                    </button>
+                                    <button class="btn btn-primary" onclick="saveTemplate()" id="saveBtn">
+                                        <i class="fas fa-save me-1"></i>Save
+                                    </button>
+                                </div>
+                            </div>
+
+                            <form id="templateForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Template Information</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Template ID *</label>
+                                                    <input type="text" class="form-control" id="templateId" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Type *</label>
+                                                    <select class="form-select" id="templateType" required>
+                                                        <option value="">Select Type</option>
+                                                        <option value="VERIFICATION">Verification</option>
+                                                        <option value="WELCOME">Welcome</option>
+                                                        <option value="PASSWORD_RESET">Password Reset</option>
+                                                        <option value="NOTIFICATION">Notification</option>
+                                                        <option value="NEWSLETTER">Newsletter</option>
+                                                        <option value="INVOICE">Invoice</option>
+                                                        <option value="REMINDER">Reminder</option>
+                                                        <option value="PROMOTIONAL">Promotional</option>
+                                                        <option value="TRANSACTIONAL">Transactional</option>
+                                                        <option value="SYSTEM">System</option>
+                                                        <option value="CUSTOM">Custom</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Name *</label>
+                                                    <input type="text" class="form-control" id="templateName" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description</label>
+                                                    <textarea class="form-control" id="templateDescription" rows="3"></textarea>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Version</label>
+                                                        <input type="text" class="form-control" id="templateVersion" value="1.0.0">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Author</label>
+                                                        <input type="text" class="form-control" id="templateAuthor">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Tags (comma-separated)</label>
+                                                    <input type="text" class="form-control" id="templateTags" placeholder="tag1, tag2, tag3">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">App Entry *</label>
+                                                    <select class="form-select" id="templateAppEntry" required>
+                                                        <option value="">Select App</option>
+                                                        <option value="freezer">Freezer</option>
+                                                        <option value="tennis">Tennis</option>
+                                                        <option value="qaBot">QA Bot</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">From Email *</label>
+                                                    <input type="email" class="form-control" id="templateFrom" required placeholder="noreply@example.com">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Template Variables</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addVariable()">
+                                                    <i class="fas fa-plus me-1"></i>Add Variable
+                                                </button>
+                                                <div id="variablesContainer">
+                                                    <!-- Variables will be added here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                                                    <li class="nav-item" role="presentation">
+                                                        <button class="nav-link active" id="subject-tab" data-bs-toggle="tab" data-bs-target="#subject-pane" type="button" role="tab">
+                                                            Subject
+                                                        </button>
+                                                    </li>
+                                                    <li class="nav-item" role="presentation">
+                                                        <button class="nav-link" id="html-tab" data-bs-toggle="tab" data-bs-target="#html-pane" type="button" role="tab">
+                                                            HTML Content
+                                                        </button>
+                                                    </li>
+                                                    <li class="nav-item" role="presentation">
+                                                        <button class="nav-link" id="text-tab" data-bs-toggle="tab" data-bs-target="#text-pane" type="button" role="tab">
+                                                            Text Content
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="tab-content">
+                                                    <div class="tab-pane fade show active" id="subject-pane" role="tabpanel">
+                                                        <label class="form-label">Email Subject *</label>
+                                                        <input type="text" class="form-control" id="templateSubject" required placeholder="{{recipientName}}, welcome to our service!">
+                                                    </div>
+                                                    <div class="tab-pane fade" id="html-pane" role="tabpanel">
+                                                        <label class="form-label">HTML Content *</label>
+                                                        <textarea id="htmlContent" class="code-editor"></textarea>
+                                                    </div>
+                                                    <div class="tab-pane fade" id="text-pane" role="tabpanel">
+                                                        <label class="form-label">Text Content *</label>
+                                                        <textarea id="textContent" class="code-editor"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal fade" id="previewModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Template Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="preview-subject-tab" data-bs-toggle="tab" data-bs-target="#preview-subject-pane" type="button" role="tab">
+                                Subject
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="preview-html-tab" data-bs-toggle="tab" data-bs-target="#preview-html-pane" type="button" role="tab">
+                                HTML Preview
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="preview-text-tab" data-bs-toggle="tab" data-bs-target="#preview-text-pane" type="button" role="tab">
+                                Text Preview
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="preview-subject-pane" role="tabpanel">
+                            <div class="alert alert-info">
+                                <strong>Subject:</strong>
+                                <div id="previewSubject" class="mt-2"></div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="preview-html-pane" role="tabpanel">
+                            <iframe id="previewHtml" class="template-preview w-100"></iframe>
+                        </div>
+                        <div class="tab-pane fade" id="preview-text-pane" role="tabpanel">
+                            <pre id="previewText" class="bg-light p-3" style="white-space: pre-wrap;"></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this email template?</p>
+                    <div class="alert alert-warning">
+                        <strong><i class="fas fa-info-circle me-2"></i>Template Details:</strong>
+                        <div id="deleteTemplateInfo">
+                            <!-- Template info will be populated here -->
+                        </div>
+                    </div>
+                    <p class="text-danger">
+                        <strong>Warning:</strong> This action cannot be undone. The template will be permanently deleted from both the database and S3 storage.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteTemplate()" id="confirmDeleteBtn">
+                        <i class="fas fa-trash me-1"></i>Delete Template
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+
+    <script>
+        /**
+         * Email Template Manager - Admin Interface
+         *
+         * This interface has been refactored to work with:
+         * - Prisma EmailTemplate model (database layer)
+         * - S3EmailTemplateManager (storage layer)
+         * - EmailTemplate TypeScript interfaces
+         *
+         * Key changes:
+         * - Form data structure matches TemplateUploadRequest interface
+         * - Template loading handles EmailTemplate interface from S3
+         * - Database records are fetched separately for 'from' and userId fields
+         * - Added comprehensive validation for all required fields
+         * - Enhanced error handling and user feedback
+         */
+
+        // Global variables
+        let currentUser = null;
+        let currentTemplate = null;
+        let isEditMode = false;
+        let htmlEditor, textEditor;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in by trying to access a protected endpoint
+            checkAuthStatus();
+
+            // Initialize form handlers
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+        });
+
+        // Check if user is authenticated by testing API access
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/email-templates', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    // User is authenticated, show main app
+                    showMainApp();
+                } else {
+                    showLoginScreen();
+                }
+            } catch (error) {
+                showLoginScreen();
+            }
+        }
+
+        // Authentication functions
+        function showLoginScreen() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+
+            // Initialize the main app
+            initializeApp();
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Logging in...';
+            errorDiv.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include', // Important for cookies
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.user.role === 'ADMIN') {
+                    // Store user info and show main app
+                    currentUser = data.user;
+                    localStorage.setItem('adminUser', JSON.stringify(data.user));
+                    showMainApp();
+                } else if (response.ok && data.user.role !== 'ADMIN') {
+                    throw new Error('Admin privileges required');
+                } else {
+                    throw new Error(data.error || 'Login failed');
+                }
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Login';
+            }
+        }
+
+        function logout() {
+            // Clear local storage and redirect to logout
+            localStorage.removeItem('adminUser');
+            currentUser = null;
+
+            // Call logout endpoint to clear server-side session
+            fetch('/api/users/logout', {
+                method: 'POST',
+                credentials: 'include'
+            }).finally(() => {
+                showLoginScreen();
+            });
+        }
+
+        function initializeApp() {
+            // Show user info
+            const userInfo = currentUser || JSON.parse(localStorage.getItem('adminUser') || '{}');
+            if (userInfo.email) {
+                currentUser = userInfo;
+                document.getElementById('userInfo').textContent = `Logged in as: ${userInfo.email}`;
+            }
+
+            // Initialize code editors
+            initializeEditors();
+
+            // Load templates
+            loadTemplates();
+        }
+
+        function initializeEditors() {
+            if (htmlEditor) htmlEditor.toTextArea();
+            if (textEditor) textEditor.toTextArea();
+
+            htmlEditor = CodeMirror.fromTextArea(document.getElementById('htmlContent'), {
+                mode: 'htmlmixed',
+                theme: 'material',
+                lineNumbers: true,
+                autoCloseTags: true,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                indentWithTabs: true,
+                lineWrapping: true
+            });
+
+            textEditor = CodeMirror.fromTextArea(document.getElementById('textContent'), {
+                mode: 'text/plain',
+                theme: 'material',
+                lineNumbers: true,
+                lineWrapping: true
+            });
+        }
+
+        // API functions
+        async function apiCall(endpoint, options = {}) {
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            };
+
+            const response = await fetch(endpoint, { ...defaultOptions, ...options });
+
+            if (response.status === 401) {
+                showLoginScreen();
+                throw new Error('Authentication required');
+            }
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Request failed');
+            }
+
+            return response.json();
+        }
+
+        // Template management functions
+        async function loadTemplates() {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const templateList = document.getElementById('templateList');
+
+            try {
+                templateList.innerHTML = '<div class="text-center text-muted"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+
+                const url = '/api/email-templates' + (typeFilter ? `?type=${typeFilter}` : '');
+                const result = await apiCall(url);
+
+                if (!result.data || result.data.length === 0) {
+                    templateList.innerHTML = '<div class="text-center text-muted">No templates found</div>';
+                    return;
+                }
+
+                templateList.innerHTML = '';
+
+                // New API returns database records with all necessary information
+                result.data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'template-item p-2 mb-2 rounded';
+
+                    // Database record structure: { id, templateId, type, name, appEntry, userId, from, version }
+                    const templateId = item.templateId;
+                    const templateName = item.name;
+                    const templateType = item.type;
+                    const appEntry = item.appEntry;
+                    const version = item.version || '1.0.0';
+
+                    div.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div><i class="fas fa-envelope me-2"></i><strong>${templateName}</strong></div>
+                                <small class="text-muted">${templateId} (v${version})</small>
+                            </div>
+                            <div class="text-end">
+                                <small class="badge bg-secondary">${templateType}</small>
+                                <br><small class="text-muted">${appEntry}</small>
+                            </div>
+                        </div>
+                    `;
+
+                    // Store the full item data for use in the click handler
+                    div.addEventListener('click', () => loadTemplate(item));
+                    templateList.appendChild(div);
+                });
+            } catch (error) {
+                templateList.innerHTML = `<div class="text-danger">Error: ${error.message}</div>`;
+                showNotification('Failed to load templates: ' + error.message, 'error');
+            }
+        }
+
+        async function loadTemplate(dbRecord) {
+            try {
+                // dbRecord contains: { id, templateId, type, name, appEntry, userId, from, version }
+                const { templateId, type, appEntry } = dbRecord;
+
+                // Fetch the S3 template content using the database record info
+                const result = await apiCall(`/api/email-templates/${type}/${templateId}?appEntry=${appEntry}`);
+                const template = result.data;
+
+                if (!template) {
+                    throw new Error('Template not found');
+                }
+
+                // Store both database record and S3 template data
+                currentTemplate = {
+                    dbRecord: dbRecord,
+                    id: templateId,
+                    type: type,
+                    appEntry: appEntry,
+                    data: template
+                };
+                isEditMode = true;
+
+                // Populate form with S3 template data
+                document.getElementById('templateId').value = template.metadata.id;
+                document.getElementById('templateId').disabled = true; // Disable editing in edit mode
+                document.getElementById('templateType').value = type;
+                document.getElementById('templateType').disabled = true; // Disable editing in edit mode
+                document.getElementById('templateName').value = template.metadata.name;
+                document.getElementById('templateDescription').value = template.metadata.description || '';
+                document.getElementById('templateVersion').value = template.metadata.version;
+                document.getElementById('templateAuthor').value = template.metadata.author || '';
+                document.getElementById('templateTags').value = (template.metadata.tags || []).join(', ');
+                document.getElementById('templateSubject').value = template.subject;
+                document.getElementById('templateAppEntry').value = appEntry;
+                document.getElementById('templateAppEntry').disabled = true; // Disable editing in edit mode
+
+                // Populate database-specific fields from the database record
+                document.getElementById('templateFrom').value = dbRecord.from || '';
+
+                // Set editor content
+                htmlEditor.setValue(template.htmlContent);
+                textEditor.setValue(template.textContent);
+
+                // Load variables
+                loadVariables(template.variables || []);
+
+                // Update UI
+                document.getElementById('editorTitle').textContent = `Edit Template: ${template.metadata.name}`;
+                document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save me-1"></i>Update';
+                document.getElementById('deleteBtn').classList.remove('hidden'); // Show delete button for existing templates
+                document.getElementById('welcomeMessage').classList.add('hidden');
+                document.getElementById('templateEditor').classList.remove('hidden');
+
+                // Highlight active template in the list
+                document.querySelectorAll('.template-item').forEach(item => item.classList.remove('active'));
+                // Find and highlight the clicked template
+                document.querySelectorAll('.template-item').forEach(item => {
+                    const itemText = item.textContent;
+                    if (itemText.includes(templateId) && itemText.includes(appEntry)) {
+                        item.classList.add('active');
+                    }
+                });
+
+            } catch (error) {
+                showNotification('Failed to load template: ' + error.message, 'error');
+            }
+        }
+
+        function createNewTemplate() {
+            currentTemplate = null;
+            isEditMode = false;
+
+            // Reset form
+            document.getElementById('templateForm').reset();
+            document.getElementById('templateId').disabled = false;
+            document.getElementById('templateType').disabled = false;
+            document.getElementById('templateAppEntry').disabled = false;
+            document.getElementById('variablesContainer').innerHTML = '';
+
+            // Clear editors
+            htmlEditor.setValue('');
+            textEditor.setValue('');
+
+            // Set default values
+            document.getElementById('templateVersion').value = '1.0.0';
+            if (currentUser) {
+                document.getElementById('templateAuthor').value = currentUser.email;
+            }
+
+            // Set default HTML and text content with Handlebars placeholders
+            const defaultHtmlContent = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{subject}}</title>
+</head>
+<body>
+    <h1>Hello {{recipientName}}!</h1>
+    <p>This is your email template content.</p>
+    <p>Best regards,<br>Your Team</p>
+</body>
+</html>`;
+
+            const defaultTextContent = `Hello {{recipientName}}!
+
+This is your email template content.
+
+Best regards,
+Your Team`;
+
+            htmlEditor.setValue(defaultHtmlContent);
+            textEditor.setValue(defaultTextContent);
+
+            // Add a default variable
+            addVariable();
+            const container = document.getElementById('variablesContainer');
+            const firstVariable = container.firstElementChild;
+            if (firstVariable) {
+                firstVariable.querySelector('.var-name').value = 'recipientName';
+                firstVariable.querySelector('.var-type').value = 'string';
+                firstVariable.querySelector('.var-description').value = 'The name of the email recipient';
+                firstVariable.querySelector('.var-required').checked = true;
+            }
+
+            // Update UI
+            document.getElementById('editorTitle').textContent = 'Create New Template';
+            document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save me-1"></i>Create';
+            document.getElementById('deleteBtn').classList.add('hidden'); // Hide delete button for new templates
+            document.getElementById('welcomeMessage').classList.add('hidden');
+            document.getElementById('templateEditor').classList.remove('hidden');
+
+            // Remove active selection
+            document.querySelectorAll('.template-item').forEach(item => item.classList.remove('active'));
+        }
+
+        async function saveTemplate() {
+            try {
+                const formData = getFormData();
+
+                if (!validateForm(formData)) {
+                    return;
+                }
+
+                const saveBtn = document.getElementById('saveBtn');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Saving...';
+
+                let result;
+                if (isEditMode && currentTemplate) {
+                    // Update existing template - use the database record info
+                    result = await apiCall(`/api/email-templates/${currentTemplate.type}/${currentTemplate.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            ...formData,
+                            appEntry: currentTemplate.appEntry // Ensure we keep the original appEntry
+                        })
+                    });
+                } else {
+                    // Create new template
+                    result = await apiCall('/api/email-templates', {
+                        method: 'POST',
+                        body: JSON.stringify(formData)
+                    });
+
+                    // After successful creation, set up for editing
+                    if (result.success) {
+                        // Create a mock database record for the currentTemplate
+                        const mockDbRecord = {
+                            id: result.data.templateId, // This might be returned from the API
+                            templateId: formData.templateId,
+                            type: formData.type,
+                            name: formData.name,
+                            appEntry: formData.appEntry,
+                            userId: formData.userId,
+                            from: formData.from,
+                            version: formData.version
+                        };
+
+                        currentTemplate = {
+                            dbRecord: mockDbRecord,
+                            id: formData.templateId,
+                            type: formData.type,
+                            appEntry: formData.appEntry,
+                            data: {
+                                metadata: formData.metadata,
+                                subject: formData.subject,
+                                htmlContent: formData.htmlContent,
+                                textContent: formData.textContent,
+                                variables: formData.variables
+                            }
+                        };
+                        isEditMode = true;
+
+                        // Update UI for edit mode
+                        document.getElementById('templateId').disabled = true;
+                        document.getElementById('templateType').disabled = true;
+                        document.getElementById('templateAppEntry').disabled = true;
+                        document.getElementById('editorTitle').textContent = `Edit Template: ${formData.metadata.name}`;
+                        document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save me-1"></i>Update';
+                        document.getElementById('deleteBtn').classList.remove('hidden'); // Show delete button after successful creation
+                    }
+                }
+
+                showNotification(result.message || 'Template saved successfully!', 'success');
+                loadTemplates(); // Refresh template list
+
+            } catch (error) {
+                showNotification('Failed to save template: ' + error.message, 'error');
+            } finally {
+                const saveBtn = document.getElementById('saveBtn');
+                saveBtn.disabled = false;
+                if (!isEditMode) {
+                    saveBtn.innerHTML = '<i class="fas fa-save me-1"></i>Create';
+                } else {
+                    saveBtn.innerHTML = '<i class="fas fa-save me-1"></i>Update';
+                }
+            }
+        }
+
+        function getFormData() {
+            const variables = [];
+            document.querySelectorAll('.variable-input-group').forEach(group => {
+                const name = group.querySelector('.var-name').value;
+                const type = group.querySelector('.var-type').value;
+                const description = group.querySelector('.var-description').value;
+                const required = group.querySelector('.var-required').checked;
+                const defaultValue = group.querySelector('.var-default').value;
+
+                if (name) {
+                    variables.push({
+                        name,
+                        type,
+                        description,
+                        required,
+                        defaultValue: defaultValue || undefined
+                    });
+                }
+            });
+
+            // Match TemplateUploadRequest interface structure
+            return {
+                templateId: document.getElementById('templateId').value,
+                type: document.getElementById('templateType').value,
+                name: document.getElementById('templateName').value,
+                appEntry: document.getElementById('templateAppEntry').value,
+                from: document.getElementById('templateFrom').value,
+                version: document.getElementById('templateVersion').value || '1.0.0',
+                userId: currentUser ? currentUser.id : undefined,
+                metadata: {
+                    id: document.getElementById('templateId').value,
+                    name: document.getElementById('templateName').value,
+                    description: document.getElementById('templateDescription').value || '',
+                    version: document.getElementById('templateVersion').value || '1.0.0',
+                    author: document.getElementById('templateAuthor').value || (currentUser ? currentUser.email : ''),
+                    tags: document.getElementById('templateTags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
+                },
+                subject: document.getElementById('templateSubject').value,
+                htmlContent: htmlEditor.getValue(),
+                textContent: textEditor.getValue(),
+                variables
+            };
+        }
+
+        function validateForm(data) {
+            const required = ['templateId', 'type', 'name', 'subject', 'appEntry', 'from'];
+            const missing = required.filter(field => !data[field]);
+
+            if (missing.length > 0) {
+                showNotification(`Missing required fields: ${missing.join(', ')}`, 'error');
+                return false;
+            }
+
+            // Validate templateId format (should be lowercase, alphanumeric with hyphens)
+            const templateIdPattern = /^[a-z0-9\-]+$/;
+            if (!templateIdPattern.test(data.templateId)) {
+                showNotification('Template ID should contain only lowercase letters, numbers, and hyphens', 'error');
+                return false;
+            }
+
+            // Validate email format for 'from' field
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(data.from)) {
+                showNotification('Please enter a valid email address for the From field', 'error');
+                return false;
+            }
+
+            // Validate version format (semantic versioning)
+            const versionPattern = /^\d+\.\d+\.\d+$/;
+            if (data.metadata.version && !versionPattern.test(data.metadata.version)) {
+                showNotification('Version should follow semantic versioning format (e.g., 1.0.0)', 'error');
+                return false;
+            }
+
+            if (!data.htmlContent.trim()) {
+                showNotification('HTML content is required', 'error');
+                return false;
+            }
+
+            if (!data.textContent.trim()) {
+                showNotification('Text content is required', 'error');
+                return false;
+            }
+
+            // Validate that required variables are properly defined
+            const requiredVariables = data.variables.filter(v => v.required && !v.name);
+            if (requiredVariables.length > 0) {
+                showNotification('All required variables must have a name', 'error');
+                return false;
+            }
+
+            // Check for duplicate variable names
+            const variableNames = data.variables.map(v => v.name).filter(name => name);
+            const uniqueNames = new Set(variableNames);
+            if (variableNames.length !== uniqueNames.size) {
+                showNotification('Variable names must be unique', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Variable management functions
+        function addVariable() {
+            const container = document.getElementById('variablesContainer');
+            const variableDiv = document.createElement('div');
+            variableDiv.className = 'variable-input-group';
+            variableDiv.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Variable</h6>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.closest('.variable-input-group').remove()">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control var-name" placeholder="recipientName">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Type</label>
+                        <select class="form-select var-type">
+                            <option value="string">String</option>
+                            <option value="number">Number</option>
+                            <option value="boolean">Boolean</option>
+                            <option value="date">Date</option>
+                            <option value="url">URL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-8">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control var-description" placeholder="The recipient's name">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Default Value</label>
+                        <input type="text" class="form-control var-default" placeholder="Optional">
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <div class="form-check">
+                        <input class="form-check-input var-required" type="checkbox" checked>
+                        <label class="form-check-label">Required</label>
+                    </div>
+                </div>
+            `;
+            container.appendChild(variableDiv);
+        }
+
+        function loadVariables(variables) {
+            const container = document.getElementById('variablesContainer');
+            container.innerHTML = '';
+
+            variables.forEach(variable => {
+                addVariable();
+                const lastGroup = container.lastElementChild;
+                lastGroup.querySelector('.var-name').value = variable.name;
+                lastGroup.querySelector('.var-type').value = variable.type;
+                lastGroup.querySelector('.var-description').value = variable.description || '';
+                lastGroup.querySelector('.var-default').value = variable.defaultValue || '';
+                lastGroup.querySelector('.var-required').checked = variable.required !== false;
+            });
+        }
+
+        // Preview function
+        async function previewTemplate() {
+            try {
+                // Generate sample data based on variables first
+                let variables = [];
+                if (isEditMode && currentTemplate?.data?.variables) {
+                    variables = currentTemplate.data.variables;
+                } else {
+                    // Get variables from current form
+                    document.querySelectorAll('.variable-input-group').forEach(group => {
+                        const name = group.querySelector('.var-name').value;
+                        const type = group.querySelector('.var-type').value;
+                        const description = group.querySelector('.var-description').value;
+                        const required = group.querySelector('.var-required').checked;
+                        const defaultValue = group.querySelector('.var-default').value;
+
+                        if (name) {
+                            variables.push({ name, type, description, required, defaultValue: defaultValue || undefined });
+                        }
+                    });
+                }
+
+                const sampleData = {};
+                variables.forEach(variable => {
+                    switch (variable.type) {
+                        case 'string':
+                            sampleData[variable.name] = variable.defaultValue || `Sample ${variable.name}`;
+                            break;
+                        case 'number':
+                            sampleData[variable.name] = variable.defaultValue ? parseInt(variable.defaultValue) : 123;
+                            break;
+                        case 'boolean':
+                            sampleData[variable.name] = variable.defaultValue === 'true' || true;
+                            break;
+                        case 'date':
+                            sampleData[variable.name] = variable.defaultValue || new Date().toISOString();
+                            break;
+                        case 'url':
+                            sampleData[variable.name] = variable.defaultValue || 'https://example.com';
+                            break;
+                        default:
+                            sampleData[variable.name] = variable.defaultValue || 'Sample Value';
+                    }
+                });
+
+                // Add common variables if not present
+                if (!sampleData.recipientName) sampleData.recipientName = 'John Doe';
+                if (!sampleData.recipientEmail) sampleData.recipientEmail = 'john.doe@example.com';
+                if (!sampleData.currentYear) sampleData.currentYear = new Date().getFullYear();
+
+                let rendered;
+                if (isEditMode && currentTemplate) {
+                    // Use existing template API for preview
+                    const result = await apiCall(`/api/email-templates/${currentTemplate.type}/${currentTemplate.id}/preview?appEntry=${currentTemplate.appEntry}`, {
+                        method: 'POST',
+                        body: JSON.stringify({ data: sampleData })
+                    });
+                    rendered = result.data;
+                } else {
+                    // For new templates, we need to render locally using current form data
+                    // Since we don't have a separate preview endpoint, we'll do client-side rendering
+                    const subject = document.getElementById('templateSubject').value;
+                    const htmlContent = htmlEditor.getValue();
+                    const textContent = textEditor.getValue();
+
+                    // Simple handlebars-like replacement for preview
+                    rendered = {
+                        subject: replaceVariables(subject, sampleData),
+                        html: replaceVariables(htmlContent, sampleData),
+                        text: replaceVariables(textContent, sampleData)
+                    };
+                }
+
+                // Update preview modal
+                document.getElementById('previewSubject').textContent = rendered.subject;
+                document.getElementById('previewText').textContent = rendered.text;
+
+                // Update HTML preview
+                const iframe = document.getElementById('previewHtml');
+                const doc = iframe.contentDocument || iframe.contentWindow.document;
+                doc.open();
+                doc.write(rendered.html);
+                doc.close();
+
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+                modal.show();
+
+            } catch (error) {
+                showNotification('Failed to preview template: ' + error.message, 'error');
+            }
+        }
+
+        // Simple variable replacement for client-side preview
+        function replaceVariables(content, data) {
+            let result = content;
+            for (const [key, value] of Object.entries(data)) {
+                const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+                result = result.replace(regex, String(value));
+            }
+            return result;
+        }
+
+        // Delete template functions
+        async function deleteTemplate() {
+            if (!isEditMode || !currentTemplate) {
+                showNotification('No template selected for deletion', 'warning');
+                return;
+            }
+
+            // Additional validation - now we have dbRecord with all necessary info
+            if (!currentTemplate.dbRecord || !currentTemplate.id || !currentTemplate.type || !currentTemplate.appEntry) {
+                showNotification('Template data is incomplete. Cannot delete.', 'error');
+                return;
+            }
+
+            // Populate the delete confirmation modal with template info
+            const templateInfo = document.getElementById('deleteTemplateInfo');
+            templateInfo.innerHTML = `
+                <div><strong>ID:</strong> ${currentTemplate.id}</div>
+                <div><strong>Type:</strong> ${currentTemplate.type}</div>
+                <div><strong>App Entry:</strong> ${currentTemplate.appEntry}</div>
+                <div><strong>Name:</strong> ${currentTemplate.data.metadata.name}</div>
+                <div><strong>Version:</strong> ${currentTemplate.data.metadata.version}</div>
+                <div><strong>From:</strong> ${currentTemplate.dbRecord.from}</div>
+            `;
+
+            // Show the confirmation modal
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+        }
+
+        async function confirmDeleteTemplate() {
+            if (!isEditMode || !currentTemplate) {
+                showNotification('No template selected for deletion', 'error');
+                return;
+            }
+
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            const originalText = confirmBtn.innerHTML;
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Deleting...';
+
+            try {
+                // Call delete API endpoint
+                const result = await apiCall(`/api/email-templates/${currentTemplate.type}/${currentTemplate.id}?appEntry=${currentTemplate.appEntry}`, {
+                    method: 'DELETE'
+                });
+
+                // Close the modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                modal.hide();
+
+                // Show success message
+                showNotification(result.message || 'Template deleted successfully!', 'success');
+
+                // Reset the editor to welcome state
+                currentTemplate = null;
+                isEditMode = false;
+                document.getElementById('welcomeMessage').classList.remove('hidden');
+                document.getElementById('templateEditor').classList.add('hidden');
+                document.getElementById('deleteBtn').classList.add('hidden'); // Hide delete button in welcome state
+
+                // Refresh the template list
+                loadTemplates();
+
+            } catch (error) {
+                showNotification('Failed to delete template: ' + error.message, 'error');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = originalText;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
+            const alertClass = type === 'error' ? 'alert-danger' :
+                              type === 'success' ? 'alert-success' :
+                              type === 'warning' ? 'alert-warning' : 'alert-info';
+
+            const notification = document.createElement('div');
+            notification.className = `alert ${alertClass} notification alert-dismissible fade show`;
+            notification.innerHTML = `
+                <strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            container.appendChild(notification);
+
+            // Auto-remove after 5 seconds for success/info, 8 seconds for errors/warnings
+            const timeout = (type === 'error' || type === 'warning') ? 8000 : 5000;
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, timeout);
+        }
+    </script>
+</body>
+</html>
