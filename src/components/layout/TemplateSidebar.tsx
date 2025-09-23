@@ -1,6 +1,7 @@
 import type React from "react";
 import { Box, Drawer, Toolbar, Button, Divider } from "@mui/material";
 import { Add } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 import type { Template, TemplateType } from "@/types";
 import { TemplateFilters } from "@/components/template/TemplateFilters";
@@ -33,6 +34,7 @@ export const TemplateSidebar: React.FC<TemplateSidebarProps> = ({
   onDeleteTemplate,
   onPreviewTemplate,
 }) => {
+  const { t } = useTranslation();
   return (
     <Drawer
       variant="permanent"
@@ -55,7 +57,7 @@ export const TemplateSidebar: React.FC<TemplateSidebarProps> = ({
           onClick={onCreateTemplate}
           sx={{ mb: 2 }}
         >
-          新建模板
+          {t('template.createTemplate')}
         </Button>
 
         {/* 筛选器 */}

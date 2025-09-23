@@ -1,6 +1,7 @@
 import type React from "react";
 import type { ReactNode } from "react"
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import LoginForm from "@/components/auth/LoginForm";
 
@@ -9,6 +10,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -24,7 +26,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
       >
         <CircularProgress size={60} />
         <Typography variant="h6" sx={{ mt: 2 }}>
-          Loading...
+          {t('auth.loading')}
         </Typography>
       </Box>
     );

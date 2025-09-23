@@ -1,0 +1,109 @@
+{
+  "auth": {
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "loading": "読み込み中...",
+    "loginTitle": "メールテンプレート管理システムにログイン",
+    "loginButton": "サインイン",
+    "logoutConfirm": "サインアウト",
+    "authError": "認証に失敗しました",
+    "adminRequired": "管理者権限が必要です",
+    "networkError": "ネットワークエラー: {{message}}"
+  },
+  "template": {
+    "templateId": "テンプレートID",
+    "templateName": "テンプレート名",
+    "templateType": "テンプレートタイプ",
+    "appEntry": "アプリケーションエントリ",
+    "subject": "メール件名",
+    "senderEmail": "送信者メールアドレス",
+    "description": "説明",
+    "version": "バージョン",
+    "htmlContent": "HTMLコンテンツ",
+    "textContent": "テキストコンテンツ",
+    "basicInfo": "基本情報",
+    "metadata": "メタデータ",
+    "content": "コンテンツ",
+    "preview": "プレビュー",
+    "save": "保存",
+    "saving": "保存中...",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "delete": "削除",
+    "edit": "編集",
+    "create": "作成",
+    "update": "更新",
+    "allTypes": "すべてのタイプ",
+    "allEntries": "すべてのエントリ",
+    "subjectPreview": "件名",
+    "htmlPreview": "HTMLプレビュー",
+    "textPreview": "テキストプレビュー"
+  },
+  "templateTypes": {
+    "VERIFICATION": "メール認証",
+    "WELCOME": "ウェルカムメール",
+    "PASSWORD_RESET": "パスワードリセット",
+    "NOTIFICATION": "通知",
+    "NEWSLETTER": "ニュースレター",
+    "INVOICE": "請求書",
+    "REMINDER": "リマインダー",
+    "PROMOTIONAL": "プロモーション",
+    "TRANSACTIONAL": "トランザクション",
+    "SYSTEM": "システム",
+    "CUSTOM": "カスタム"
+  },
+  "appEntries": {
+    "WEB_APP": "Webアプリケーション",
+    "MOBILE_APP": "モバイルアプリ",
+    "ADMIN_PANEL": "管理パネル",
+    "API_SERVICE": "APIサービス",
+    "MARKETING": "マーケティングキャンペーン"
+  },
+  "variables": {
+    "variableManagement": "変数管理",
+    "addVariable": "変数を追加",
+    "variableName": "変数名",
+    "variableType": "タイプ",
+    "description": "説明",
+    "defaultValue": "デフォルト値",
+    "required": "必須",
+    "variable": "変数 {{index}}",
+    "noVariables": "変数が設定されていません。「変数を追加」をクリックして最初の変数を作成してください。",
+    "types": {
+      "string": "文字列",
+      "number": "数値",
+      "boolean": "真偽値",
+      "date": "日付",
+      "url": "URL"
+    }
+  },
+  "common": {
+    "confirm": "確認",
+    "cancel": "キャンセル",
+    "yes": "はい",
+    "no": "いいえ",
+    "ok": "OK",
+    "warning": "警告",
+    "error": "エラー",
+    "success": "成功",
+    "info": "情報",
+    "search": "検索",
+    "filter": "フィルター",
+    "sort": "並び替え",
+    "actions": "アクション"
+  },
+  "app": {
+    "title": "メールテンプレート管理システム",
+    "description": "アプリケーション用のメールテンプレートを管理",
+    "systemTitle": "メールテンプレート管理システム"
+  },
+  "messages": {
+    "deleteConfirm": "このテンプレートを削除してもよろしいですか？",
+    "saveSuccess": "テンプレートを正常に保存しました",
+    "deleteSuccess": "テンプレートを正常に削除しました",
+    "loadError": "データの読み込みに失敗しました",
+    "saveError": "テンプレートの保存に失敗しました"
+  }
+}

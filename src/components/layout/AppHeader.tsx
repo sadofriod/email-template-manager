@@ -12,7 +12,8 @@ import {
   ListItemText,
 } from "@mui/material";
 import { AccountCircle, Logout } from "@mui/icons-material";
-
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 import type { User } from "@/types";
 
 interface AppHeaderProps {
@@ -21,6 +22,7 @@ interface AppHeaderProps {
 }
 
 export const AppHeader: React.FC<AppHeaderProps> = ({ user, onLogout }) => {
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -44,10 +46,11 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ user, onLogout }) => {
       >
         <Toolbar>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            邮件模板管理系统
+            {t('app.systemTitle')}
           </Typography>
 
-          <Box display="flex" alignItems="center">
+          <Box display="flex" alignItems="center" gap={2}>
+            <LanguageSwitcher size="small" />
             <Typography variant="body2" sx={{ mr: 2 }}>
               {user?.email}
             </Typography>
@@ -70,7 +73,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ user, onLogout }) => {
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          <ListItemText>退出登录</ListItemText>
+          <ListItemText>{t('auth.logout')}</ListItemText>
         </MenuItem>
       </Menu>
     </>

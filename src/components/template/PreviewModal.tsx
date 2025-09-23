@@ -13,6 +13,7 @@ import {
   Paper,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 interface TemplateData {
   templateId: string;
@@ -61,6 +62,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({
   onClose,
   template,
 }) => {
+  const { t } = useTranslation();
   const [previewTab, setPreviewTab] = React.useState(0);
 
   if (!template) return null;
@@ -116,9 +118,9 @@ const PreviewModal: React.FC<PreviewModalProps> = ({
           alignItems: "center",
         }}
       >
-        <Typography variant="h6">Template Preview</Typography>
+        <Typography variant="h6">{t('template.templatePreview')}</Typography>
         <Button onClick={onClose} startIcon={<Close />}>
-          Close
+          {t('template.close')}
         </Button>
       </DialogTitle>
       <DialogContent>
@@ -127,15 +129,15 @@ const PreviewModal: React.FC<PreviewModalProps> = ({
           onChange={(_, value) => setPreviewTab(value)}
           sx={{ mb: 2 }}
         >
-          <Tab label="Subject" />
-          <Tab label="HTML Preview" />
-          <Tab label="Text Preview" />
+          <Tab label={t('template.subjectPreview')} />
+          <Tab label={t('template.htmlPreview')} />
+          <Tab label={t('template.textPreview')} />
         </Tabs>
 
         <TabPanel value={previewTab} index={0}>
           <Alert severity="info">
             <Typography variant="subtitle1" component="div">
-              <strong>Subject:</strong>
+              <strong>{t('template.subject')}:</strong>
             </Typography>
             <Typography variant="body1" sx={{ mt: 1 }}>
               {rendered.subject}
@@ -153,7 +155,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({
                 height: "100%",
                 border: "none",
               }}
-              title="HTML Preview"
+              title={t('template.htmlPreview')}
             />
           </Paper>
         </TabPanel>
@@ -174,7 +176,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({
         </TabPanel>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+        <Button onClick={onClose}>{t('template.close')}</Button>
       </DialogActions>
     </Dialog>
   );

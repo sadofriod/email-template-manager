@@ -8,6 +8,7 @@ import {
   Chip,
 } from "@mui/material";
 import { Edit, Delete, Visibility } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 import type { Template } from "@/types";
 import { format } from "@/utils";
 
@@ -24,6 +25,8 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
   onDelete,
   onPreview,
 }) => {
+  const { t } = useTranslation();
+  
   return (
     <Card>
       <CardContent>
@@ -65,15 +68,15 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
         </Box>
 
         <Typography variant="body2" color="text.secondary" mb={1}>
-          ID: {template.templateId}
+          {t('template.id')}: {template.templateId}
         </Typography>
 
         <Typography variant="body2" color="text.secondary" mb={1}>
-          版本: {template.version}
+          {t('template.version')}: {template.version}
         </Typography>
 
         <Typography variant="body2" color="text.secondary">
-          发件人: {template.from}
+          {t('template.from')}: {template.from}
         </Typography>
       </CardContent>
     </Card>

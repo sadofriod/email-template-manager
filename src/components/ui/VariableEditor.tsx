@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 import type { Variable } from "@/types";
 import { VARIABLE_TYPE_OPTIONS } from "@/constants";
 
@@ -29,6 +30,8 @@ export const VariableEditor: React.FC<VariableEditorProps> = ({
   onRemoveVariable,
   onUpdateVariable,
 }) => {
+  const { t } = useTranslation();
+  
   return (
     <Box>
       <Box
@@ -37,9 +40,9 @@ export const VariableEditor: React.FC<VariableEditorProps> = ({
         alignItems="center"
         mb={2}
       >
-        <Typography variant="h6">变量管理</Typography>
+        <Typography variant="h6">{t('variables.variableManagement')}</Typography>
         <Button variant="outlined" onClick={onAddVariable}>
-          添加变量
+          {t('variables.addVariable')}
         </Button>
       </Box>
 
@@ -58,7 +61,7 @@ export const VariableEditor: React.FC<VariableEditorProps> = ({
             alignItems="center"
             mb={2}
           >
-            <Typography variant="subtitle2">变量 {index + 1}</Typography>
+            <Typography variant="subtitle2">{t('variables.variable', { index: index + 1 })}</Typography>
             <IconButton
               size="small"
               onClick={() => onRemoveVariable(index)}
@@ -70,17 +73,17 @@ export const VariableEditor: React.FC<VariableEditorProps> = ({
 
           <Box display="flex" gap={2} mb={2}>
             <TextField
-              label="变量名"
+              label={t('variables.variableName')}
               value={variable.name}
               onChange={(e) => onUpdateVariable(index, "name", e.target.value)}
               fullWidth
               size="small"
             />
             <FormControl fullWidth size="small">
-              <InputLabel>类型</InputLabel>
+              <InputLabel>{t('variables.variableType')}</InputLabel>
               <Select
                 value={variable.type}
-                label="类型"
+                label={t('variables.variableType')}
                 onChange={(e) =>
                   onUpdateVariable(index, "type", e.target.value)
                 }
@@ -95,7 +98,7 @@ export const VariableEditor: React.FC<VariableEditorProps> = ({
           </Box>
 
           <TextField
-            label="描述"
+            label={t('variables.description')}
             value={variable.description}
             onChange={(e) =>
               onUpdateVariable(index, "description", e.target.value)
@@ -107,7 +110,7 @@ export const VariableEditor: React.FC<VariableEditorProps> = ({
 
           <Box display="flex" gap={2} alignItems="center">
             <TextField
-              label="默认值"
+              label={t('variables.defaultValue')}
               value={variable.defaultValue || ""}
               onChange={(e) =>
                 onUpdateVariable(index, "defaultValue", e.target.value)
@@ -124,7 +127,7 @@ export const VariableEditor: React.FC<VariableEditorProps> = ({
                   }
                 />
               }
-              label="必填"
+              label={t('variables.required')}
             />
           </Box>
         </Box>
@@ -132,7 +135,7 @@ export const VariableEditor: React.FC<VariableEditorProps> = ({
 
       {variables.length === 0 && (
         <Typography color="text.secondary" textAlign="center" py={4}>
-          暂无变量，点击"添加变量"开始添加
+          {t('variables.noVariables')}
         </Typography>
       )}
     </Box>

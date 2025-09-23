@@ -14,10 +14,13 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Email, Lock } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 
 const LoginForm: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, loading, error } = useAuth();
@@ -61,19 +64,24 @@ const LoginForm: React.FC = () => {
               >
                 <Email sx={{ fontSize: 40 }} />
               </Avatar>
-              <Typography variant="h4" component="h1" gutterBottom>
-                Email Template Manager
+              <Typography variant="h4" gutterBottom>
+                {t('app.title')}
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Admin Access Required
+                {t('auth.loginTitle')}
               </Typography>
+            </Box>
+
+            {/* Language Switcher */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <LanguageSwitcher />
             </Box>
 
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
               <TextField
                 fullWidth
                 type="email"
-                label="Email"
+                label={t('auth.email')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -87,7 +95,7 @@ const LoginForm: React.FC = () => {
               <TextField
                 fullWidth
                 type="password"
-                label="Password"
+                label={t('auth.password')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -113,7 +121,7 @@ const LoginForm: React.FC = () => {
                 sx={{ mt: 3, mb: 2, py: 1.5 }}
                 startIcon={loading ? <CircularProgress size={20} /> : null}
               >
-                {loading ? "Logging in..." : "Login"}
+                {loading ? t('auth.loading') : t('auth.loginButton')}
               </Button>
             </Box>
           </CardContent>

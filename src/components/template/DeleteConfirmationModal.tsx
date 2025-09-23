@@ -11,6 +11,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Warning, Delete } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 interface Template {
   id: string;
@@ -37,6 +38,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   template,
   loading = false,
 }) => {
+  const { t } = useTranslation();
   const handleConfirm = async () => {
     await onConfirm();
     onClose();
@@ -48,47 +50,46 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <Warning color="warning" />
-        Confirm Delete
+        {t('template.confirmDelete')}
       </DialogTitle>
       <DialogContent>
         <Typography variant="body1" gutterBottom>
-          Are you sure you want to delete this email template?
+          {t('template.deleteConfirmMessage')}
         </Typography>
 
         <Alert severity="warning" sx={{ my: 2 }}>
           <Typography variant="subtitle2" gutterBottom>
-            <strong>Template Details:</strong>
+            <strong>{t('template.templateDetails')}:</strong>
           </Typography>
           <Box sx={{ ml: 2 }}>
             <Typography variant="body2">
-              <strong>ID:</strong> {template.templateId}
+              <strong>{t('template.id')}:</strong> {template.templateId}
             </Typography>
             <Typography variant="body2">
-              <strong>Type:</strong> {template.type}
+              <strong>{t('template.type')}:</strong> {template.type}
             </Typography>
             <Typography variant="body2">
-              <strong>App Entry:</strong> {template.appEntry}
+              <strong>{t('template.appEntry')}:</strong> {template.appEntry}
             </Typography>
             <Typography variant="body2">
-              <strong>Name:</strong> {template.name}
+              <strong>{t('template.name')}:</strong> {template.name}
             </Typography>
             <Typography variant="body2">
-              <strong>Version:</strong> {template.version}
+              <strong>{t('template.version')}:</strong> {template.version}
             </Typography>
             <Typography variant="body2">
-              <strong>From:</strong> {template.from}
+              <strong>{t('template.from')}:</strong> {template.from}
             </Typography>
           </Box>
         </Alert>
 
         <Typography variant="body2" color="error">
-          <strong>Warning:</strong> This action cannot be undone. The template
-          will be permanently deleted from both the database and S3 storage.
+          <strong>{t('template.warning')}:</strong> {t('template.deleteWarningMessage')}
         </Typography>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={loading}>
-          Cancel
+          {t('template.cancel')}
         </Button>
         <Button
           onClick={handleConfirm}
@@ -97,7 +98,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
           disabled={loading}
           startIcon={loading ? <CircularProgress size={20} /> : <Delete />}
         >
-          {loading ? "Deleting..." : "Delete Template"}
+          {loading ? t('template.deleting') : t('template.deleteTemplate')}
         </Button>
       </DialogActions>
     </Dialog>

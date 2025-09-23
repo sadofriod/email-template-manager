@@ -9,6 +9,7 @@ import {
   Box,
 } from "@mui/material";
 import { Warning } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -25,12 +26,14 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   open,
   title,
   message,
-  confirmText = "确认",
-  cancelText = "取消",
+  confirmText,
+  cancelText,
   onConfirm,
   onCancel,
   variant = "warning",
 }) => {
+  const { t } = useTranslation();
+  
   const getColor = () => {
     switch (variant) {
       case "error":
@@ -54,9 +57,9 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <Typography>{message}</Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel}>{cancelText}</Button>
+        <Button onClick={onCancel}>{cancelText || t('common.cancel')}</Button>
         <Button onClick={onConfirm} variant="contained" color={getColor()}>
-          {confirmText}
+          {confirmText || t('common.confirm')}
         </Button>
       </DialogActions>
     </Dialog>

@@ -16,15 +16,11 @@ import {
   Stack,
 } from "@mui/material";
 import { Save, Preview, Close } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 import type { TemplateData } from "@/types";
-import {
-  TEMPLATE_TYPES,
-  TEMPLATE_TYPE_LABELS,
-  APP_ENTRIES,
-  APP_ENTRY_LABELS,
-} from "@/constants";
 import { useTemplateEditor } from "@/hooks/form";
+import { useTemplateTypeOptions, useAppEntryOptions } from "@/hooks/useI18nOptions";
 import { VariableEditor } from "@/components/ui/VariableEditor";
 
 interface TemplateEditorProps {
@@ -40,6 +36,9 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
   onCancel,
   onPreview,
 }) => {
+  const { t } = useTranslation();
+  const templateTypeOptions = useTemplateTypeOptions();
+  const appEntryOptions = useAppEntryOptions();
   const [saving, setSaving] = useState(false);
   const [alert, setAlert] = useState<{
     type: "success" | "error";
@@ -69,7 +68,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
     const { isValid, variableErrors } = validateForm();
 
     if (!isValid) {
-      setAlert({ type: "error", message: "请检查表单错误" });
+      setAlert({ type: "error", message: t('template.checkFormErrors') });
       return;
     }
 
@@ -82,11 +81,11 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
     try {
       const template = buildTemplateData();
       await onSave(template);
-      setAlert({ type: "success", message: "模板保存成功" });
+      setAlert({ type: "success", message: t('messages.saveSuccess') });
     } catch (error) {
       setAlert({
         type: "error",
-        message: error instanceof Error ? error.message : "保存失败",
+        message: error instanceof Error ? error.message : t('messages.saveError'),
       });
     } finally {
       setSaving(false);
@@ -97,7 +96,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
   const handlePreview = () => {
     const { isValid } = validateForm();
     if (!isValid) {
-      setAlert({ type: "error", message: "请先完善模板信息" });
+      setAlert({ type: "error", message: t('template.completeTemplateInfo') });
       return;
     }
 
@@ -115,7 +114,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
         mb={3}
       >
         <Typography variant="h4">
-          {templateData ? "编辑模板" : "新建模板"}
+          {templateData ? t('template.editTemplate') : t('template.createNew')}
         </Typography>
         <Box display="flex" gap={2}>
           <Button
@@ -123,7 +122,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
             onClick={handlePreview}
             startIcon={<Preview />}
           >
-            预览
+            {t('template.preview')}
           </Button>
           <Button
             variant="contained"
@@ -131,10 +130,10 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
             startIcon={<Save />}
             disabled={saving}
           >
-            {saving ? "保存中..." : "保存"}
+            {saving ? t('template.saving') : t('template.save')}
           </Button>
           <Button variant="outlined" onClick={onCancel} startIcon={<Close />}>
-            取消
+            {t('template.cancel')}
           </Button>
         </Box>
       </Box>
@@ -144,13 +143,13 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
         <Card>
           <CardContent>
             <Typography variant="h6" mb={2}>
-              基本信息
+              {t('template.basicInfo')}
             </Typography>
 
             <Stack spacing={2}>
               <Box display="flex" gap={2}>
                 <TextField
-                  label="模板ID"
+                  label={t('template.templateId')}
                   value={values.templateId}
                   onChange={(e) => setValue("templateId", e.target.value)}
                   error={!!errors.templateId}
@@ -159,7 +158,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                   fullWidth
                 />
                 <TextField
-                  label="模板名称"
+                  label={t('template.templateName')}
                   value={values.name}
                   onChange={(e) => handleNameChange(e.target.value)}
                   error={!!errors.name}
@@ -170,30 +169,30 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
 
               <Box display="flex" gap={2}>
                 <FormControl fullWidth>
-                  <InputLabel>模板类型</InputLabel>
+                  <InputLabel>{t('template.templateType')}</InputLabel>
                   <Select
                     value={values.type}
-                    label="模板类型"
+                    label={t('template.templateType')}
                     onChange={(e) => setValue("type", e.target.value)}
                   >
-                    {TEMPLATE_TYPES.map((type) => (
-                      <MenuItem key={type} value={type}>
-                        {TEMPLATE_TYPE_LABELS[type]}
+                    {templateTypeOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
 
                 <FormControl fullWidth>
-                  <InputLabel>应用入口</InputLabel>
+                  <InputLabel>{t('template.appEntry')}</InputLabel>
                   <Select
                     value={values.appEntry}
-                    label="应用入口"
+                    label={t('template.appEntry')}
                     onChange={(e) => setValue("appEntry", e.target.value)}
                   >
-                    {APP_ENTRIES.map((entry) => (
-                      <MenuItem key={entry} value={entry}>
-                        {APP_ENTRY_LABELS[entry]}
+                    {appEntryOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
                       </MenuItem>
                     ))}
                   </Select>
@@ -202,7 +201,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
 
               <Box display="flex" gap={2}>
                 <TextField
-                  label="发件人邮箱"
+                  label={t('template.senderEmail')}
                   value={values.from}
                   onChange={(e) => setValue("from", e.target.value)}
                   error={!!errors.from}
@@ -210,7 +209,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
                   fullWidth
                 />
                 <TextField
-                  label="邮件主题"
+                  label={t('template.subject')}
                   value={values.subject}
                   onChange={(e) => setValue("subject", e.target.value)}
                   fullWidth
@@ -224,12 +223,12 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
         <Card>
           <CardContent>
             <Typography variant="h6" mb={2}>
-              元数据
+              {t('template.metadata')}
             </Typography>
 
             <Stack spacing={2}>
               <TextField
-                label="描述"
+                label={t('template.description')}
                 value={values.description}
                 onChange={(e) => setValue("description", e.target.value)}
                 multiline
@@ -238,23 +237,23 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
               />
               <Box display="flex" gap={2}>
                 <TextField
-                  label="版本"
+                  label={t('template.version')}
                   value={values.version}
                   onChange={(e) => setValue("version", e.target.value)}
                   fullWidth
                 />
                 <TextField
-                  label="作者"
+                  label={t('template.author')}
                   value={values.author}
                   onChange={(e) => setValue("author", e.target.value)}
                   fullWidth
                 />
               </Box>
               <TextField
-                label="标签"
+                label={t('template.tags')}
                 value={values.tags}
                 onChange={(e) => setValue("tags", e.target.value)}
-                helperText="多个标签用逗号分隔"
+                helperText={t('template.tagsHelper')}
                 fullWidth
               />
             </Stack>
@@ -265,7 +264,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
         <Card>
           <CardContent>
             <Typography variant="h6" mb={2}>
-              HTML 内容
+              {t('template.htmlContent')}
             </Typography>
             <TextField
               value={values.htmlContent}
@@ -273,7 +272,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
               multiline
               rows={10}
               fullWidth
-              placeholder="输入HTML邮件内容，支持 {{变量名}} 语法"
+              placeholder={t('template.htmlPlaceholder')}
               sx={{
                 "& .MuiInputBase-input": {
                   fontFamily: "monospace",
@@ -287,7 +286,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
         <Card>
           <CardContent>
             <Typography variant="h6" mb={2}>
-              文本内容
+              {t('template.textContent')}
             </Typography>
             <TextField
               value={values.textContent}
@@ -295,7 +294,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({
               multiline
               rows={6}
               fullWidth
-              placeholder="纯文本版本的邮件内容"
+              placeholder={t('template.textPlaceholder')}
             />
           </CardContent>
         </Card>

@@ -1,0 +1,109 @@
+{
+  "auth": {
+    "login": "登录",
+    "logout": "退出登录",
+    "email": "邮箱",
+    "password": "密码",
+    "loading": "加载中...",
+    "loginTitle": "登录邮件模板管理系统",
+    "loginButton": "登录",
+    "logoutConfirm": "退出登录",
+    "authError": "认证失败",
+    "adminRequired": "需要管理员权限",
+    "networkError": "网络错误：{{message}}"
+  },
+  "template": {
+    "templateId": "模板ID",
+    "templateName": "模板名称",
+    "templateType": "模板类型",
+    "appEntry": "应用入口",
+    "subject": "邮件主题",
+    "senderEmail": "发件人邮箱",
+    "description": "描述",
+    "version": "版本",
+    "htmlContent": "HTML内容",
+    "textContent": "文本内容",
+    "basicInfo": "基本信息",
+    "metadata": "元数据",
+    "content": "内容",
+    "preview": "预览",
+    "save": "保存",
+    "saving": "保存中...",
+    "cancel": "取消",
+    "close": "关闭",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "update": "更新",
+    "allTypes": "所有类型",
+    "allEntries": "所有入口",
+    "subjectPreview": "主题",
+    "htmlPreview": "HTML预览",
+    "textPreview": "文本预览"
+  },
+  "templateTypes": {
+    "VERIFICATION": "邮箱验证",
+    "WELCOME": "欢迎邮件",
+    "PASSWORD_RESET": "密码重置",
+    "NOTIFICATION": "通知邮件",
+    "NEWSLETTER": "邮件简报",
+    "INVOICE": "发票邮件",
+    "REMINDER": "提醒邮件",
+    "PROMOTIONAL": "推广邮件",
+    "TRANSACTIONAL": "交易邮件",
+    "SYSTEM": "系统邮件",
+    "CUSTOM": "自定义"
+  },
+  "appEntries": {
+    "WEB_APP": "Web应用",
+    "MOBILE_APP": "移动应用",
+    "ADMIN_PANEL": "管理面板",
+    "API_SERVICE": "API服务",
+    "MARKETING": "营销活动"
+  },
+  "variables": {
+    "variableManagement": "变量管理",
+    "addVariable": "添加变量",
+    "variableName": "变量名",
+    "variableType": "类型",
+    "description": "描述",
+    "defaultValue": "默认值",
+    "required": "必填",
+    "variable": "变量 {{index}}",
+    "noVariables": "未配置变量。点击\"添加变量\"创建第一个变量。",
+    "types": {
+      "string": "字符串",
+      "number": "数字",
+      "boolean": "布尔值",
+      "date": "日期",
+      "url": "链接"
+    }
+  },
+  "common": {
+    "confirm": "确认",
+    "cancel": "取消",
+    "yes": "是",
+    "no": "否",
+    "ok": "确定",
+    "warning": "警告",
+    "error": "错误",
+    "success": "成功",
+    "info": "信息",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "actions": "操作"
+  },
+  "app": {
+    "title": "邮件模板管理系统",
+    "description": "管理应用程序的邮件模板",
+    "systemTitle": "邮件模板管理系统"
+  },
+  "messages": {
+    "deleteConfirm": "确定要删除此模板吗？",
+    "saveSuccess": "模板保存成功",
+    "deleteSuccess": "模板删除成功",
+    "loadError": "数据加载失败",
+    "saveError": "模板保存失败"
+  }
+}

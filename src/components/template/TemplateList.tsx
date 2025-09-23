@@ -1,6 +1,7 @@
 import type React from "react";
 import { Box, Typography, List, ListItem } from "@mui/material";
 import { Email } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 import type { Template } from "@/types";
 import { TemplateCard } from "@/components/ui/TemplateCard";
@@ -20,17 +21,19 @@ export const TemplateList: React.FC<TemplateListProps> = ({
   onDelete,
   onPreview,
 }) => {
+  const { t } = useTranslation();
+  
   return (
     <Box>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
         <Email sx={{ verticalAlign: "middle", mr: 1 }} />
-        模板列表 ({templates.length})
+        {t('template.templateList')} ({templates.length})
       </Typography>
 
       {loading ? (
-        <Typography color="text.secondary">加载中...</Typography>
+        <Typography color="text.secondary">{t('auth.loading')}</Typography>
       ) : templates.length === 0 ? (
-        <Typography color="text.secondary">暂无模板</Typography>
+        <Typography color="text.secondary">{t('template.noTemplates')}</Typography>
       ) : (
         <List>
           {templates.map((template) => (

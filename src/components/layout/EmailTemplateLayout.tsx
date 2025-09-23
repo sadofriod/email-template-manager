@@ -1,5 +1,6 @@
 import type React from "react";
 import { Box, Alert, Snackbar } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import type { Template, TemplateData } from "@/types";
 import { API_ROUTES } from "@/constants";
@@ -13,6 +14,7 @@ import PreviewModal from "@/components/template/PreviewModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export const EmailTemplateLayout: React.FC = () => {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
 
   const {
@@ -62,7 +64,7 @@ export const EmailTemplateLayout: React.FC = () => {
         handlePreviewTemplate(response.data);
       }
     } catch (_error) {
-      setAlert({ type: "error", message: "加载模板详情失败" });
+      setAlert({ type: "error", message: t('messages.loadTemplateDetailsFailed') });
     }
   };
 
@@ -113,8 +115,8 @@ export const EmailTemplateLayout: React.FC = () => {
       {deleteTemplate && (
         <ConfirmDialog
           open={!!deleteTemplate}
-          title="删除模板"
-          message={`确定要删除模板 "${deleteTemplate.name}" 吗？此操作无法撤销。`}
+          title={t('template.deleteTemplate')}
+          message={t('template.deleteConfirmWithName', { name: deleteTemplate.name })}
           onConfirm={handleDeleteTemplate}
           onCancel={() => setDeleteTemplate(null)}
           variant="error"

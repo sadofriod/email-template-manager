@@ -1,5 +1,6 @@
 import type React from "react";
 import { Box, Toolbar, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 import type { TemplateData } from "@/types";
 import { TemplateEditor } from "@/components/template/TemplateEditor";
@@ -19,6 +20,7 @@ export const MainContent: React.FC<MainContentProps> = ({
   onCancelEdit,
   onPreviewTemplate,
 }) => {
+  const { t } = useTranslation();
   return (
     <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
       <Toolbar />
@@ -33,7 +35,7 @@ export const MainContent: React.FC<MainContentProps> = ({
       ) : (
         <Box>
           <Typography variant="body1">
-            请从左侧选择一个模板进行编辑，或创建一个新模板。
+            {t('app.selectTemplateMessage')}
           </Typography>
         </Box>
       )}

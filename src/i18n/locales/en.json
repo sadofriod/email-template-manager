@@ -1,0 +1,109 @@
+{
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "loading": "Loading...",
+    "loginTitle": "Login to Email Template Manager",
+    "loginButton": "Sign In",
+    "logoutConfirm": "Sign Out",
+    "authError": "Authentication failed",
+    "adminRequired": "Administrator privileges required",
+    "networkError": "Network error: {{message}}"
+  },
+  "template": {
+    "templateId": "Template ID",
+    "templateName": "Template Name",
+    "templateType": "Template Type",
+    "appEntry": "Application Entry",
+    "subject": "Email Subject",
+    "senderEmail": "Sender Email",
+    "description": "Description",
+    "version": "Version",
+    "htmlContent": "HTML Content",
+    "textContent": "Text Content",
+    "basicInfo": "Basic Information",
+    "metadata": "Metadata",
+    "content": "Content",
+    "preview": "Preview",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "update": "Update",
+    "allTypes": "All Types",
+    "allEntries": "All Entries",
+    "subjectPreview": "Subject",
+    "htmlPreview": "HTML Preview",
+    "textPreview": "Text Preview"
+  },
+  "templateTypes": {
+    "VERIFICATION": "Email Verification",
+    "WELCOME": "Welcome Email",
+    "PASSWORD_RESET": "Password Reset",
+    "NOTIFICATION": "Notification",
+    "NEWSLETTER": "Newsletter",
+    "INVOICE": "Invoice",
+    "REMINDER": "Reminder",
+    "PROMOTIONAL": "Promotional",
+    "TRANSACTIONAL": "Transactional",
+    "SYSTEM": "System",
+    "CUSTOM": "Custom"
+  },
+  "appEntries": {
+    "WEB_APP": "Web Application",
+    "MOBILE_APP": "Mobile Application",
+    "ADMIN_PANEL": "Admin Panel",
+    "API_SERVICE": "API Service",
+    "MARKETING": "Marketing Campaign"
+  },
+  "variables": {
+    "variableManagement": "Variable Management",
+    "addVariable": "Add Variable",
+    "variableName": "Variable Name",
+    "variableType": "Type",
+    "description": "Description",
+    "defaultValue": "Default Value",
+    "required": "Required",
+    "variable": "Variable {{index}}",
+    "noVariables": "No variables configured. Click 'Add Variable' to create your first variable.",
+    "types": {
+      "string": "String",
+      "number": "Number",
+      "boolean": "Boolean",
+      "date": "Date",
+      "url": "URL"
+    }
+  },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "warning": "Warning",
+    "error": "Error",
+    "success": "Success",
+    "info": "Information",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "actions": "Actions"
+  },
+  "app": {
+    "title": "Email Template Manager",
+    "description": "Manage email templates for your applications",
+    "systemTitle": "Email Template Management System"
+  },
+  "messages": {
+    "deleteConfirm": "Are you sure you want to delete this template?",
+    "saveSuccess": "Template saved successfully",
+    "deleteSuccess": "Template deleted successfully",
+    "loadError": "Failed to load data",
+    "saveError": "Failed to save template"
+  }
+}
