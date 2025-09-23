@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { authService, AuthState } from '@/services/auth';
+import { useState, useEffect } from "react";
+import { authService, type AuthState } from "@/services/auth";
 
 // 使用认证状态的Hook
 export function useAuth() {
@@ -19,11 +19,11 @@ export function useAuth() {
     user: state.user,
     loading: state.loading,
     error: state.error,
-    
+
     // 方法
     login: authService.login.bind(authService),
     logout: authService.logout.bind(authService),
-    checkAuthStatus: authService.checkAuthStatus.bind(authService)
+    checkAuthStatus: authService.checkAuthStatus.bind(authService),
   };
 }
 

@@ -1,7 +1,7 @@
-import { API_ROUTES } from '@/constants';
-import { User } from '@/types';
-import { api, storage } from '@/utils';
-import { getCookie, deleteCookie } from 'cookies-next';
+import { API_ROUTES } from "@/constants";
+import type { User } from "@/types";
+import { api, storage } from "@/utils";
+import { getCookie, deleteCookie } from "cookies-next";
 
 // 全局状态管理
 class AuthService {
@@ -20,7 +20,7 @@ class AuthService {
 
   // 通知所有监听器
   private notify() {
-    this.listeners.forEach(listener => listener());
+    this.listeners.forEach((listener) => listener());
   }
 
   // 获取当前状态
@@ -28,7 +28,7 @@ class AuthService {
     return {
       user: this.user,
       loading: this.loading,
-      error: this.error
+      error: this.error,
     };
   }
 
@@ -74,10 +74,10 @@ class AuthService {
         this.setUser(null);
       }
     } catch (error) {
-      console.error('Auth check failed:', error);
+      console.error("Auth check failed:", error);
       this.clearToken();
       this.setUser(null);
-      this.setError('认证检查失败');
+      this.setError("认证检查失败");
     } finally {
       this.setLoading(false);
     }
@@ -91,22 +91,22 @@ class AuthService {
     try {
       const { data } = await api.post<{ user: User; token: string }>(
         API_ROUTES.AUTH.LOGIN,
-        { email, password }
+        { email, password },
       );
-      console.log('Login response data:', data?.user.role );
-      
+      console.log("Login response data:", data?.user.role);
+
       // 检查管理员权限
-      if (data?.user.role === 'ADMIN') {
+      if (data?.user.role === "ADMIN") {
         this.setUser(data.user);
         this.setToken();
         return true;
       } else {
-        this.setError('需要管理员权限');
+        this.setError("需要管理员权限");
         return false;
       }
     } catch (error) {
-      console.error('Login error:', error);
-      this.setError('网络错误：' + (error as Error).message);
+      console.error("Login error:", error);
+      this.setError(`网络错误：${(error as Error).message}`);
       return false;
     } finally {
       this.setLoading(false);
@@ -121,7 +121,7 @@ class AuthService {
       // 调用登出API
       await api.post(API_ROUTES.AUTH.LOGOUT, {});
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       // 无论API调用是否成功，都清除本地状态
       this.clearToken();
@@ -134,20 +134,20 @@ class AuthService {
   // Token管理
   private getToken(): string | null {
     // 优先从cookie获取（支持SSR）
-    const cookieToken = getCookie('auth_token') as string;
+    const cookieToken = getCookie("auth_token") as string;
     if (cookieToken) return cookieToken;
 
     // 备用从localStorage获取
-    return storage.get('auth_token');
+    return storage.get("auth_token");
   }
 
   private setToken(): void {
-    storage.set('auth_token', document.cookie);
+    storage.set("auth_token", document.cookie);
   }
 
   private clearToken(): void {
-    deleteCookie('auth_token');
-    storage.remove('auth_token');
+    deleteCookie("auth_token");
+    storage.remove("auth_token");
   }
 
   // 初始化（在应用启动时调用）

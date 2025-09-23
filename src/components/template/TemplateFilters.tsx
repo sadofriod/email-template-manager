@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from "react";
 import {
   Box,
   Typography,
@@ -6,17 +6,22 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Stack
-} from '@mui/material';
-import { FilterList } from '@mui/icons-material';
+  Stack,
+} from "@mui/material";
+import { FilterList } from "@mui/icons-material";
 
-import type { TemplateType } from '@/types';
-import { TEMPLATE_TYPES, TEMPLATE_TYPE_LABELS, APP_ENTRIES, APP_ENTRY_LABELS } from '@/constants';
+import type { TemplateType } from "@/types";
+import {
+  TEMPLATE_TYPES,
+  TEMPLATE_TYPE_LABELS,
+  APP_ENTRIES,
+  APP_ENTRY_LABELS,
+} from "@/constants";
 
 interface TemplateFiltersProps {
-  typeFilter: TemplateType | 'ALL';
+  typeFilter: TemplateType | "ALL";
   appEntryFilter: string;
-  onTypeFilterChange: (type: TemplateType | 'ALL') => void;
+  onTypeFilterChange: (type: TemplateType | "ALL") => void;
   onAppEntryFilterChange: (appEntry: string) => void;
 }
 
@@ -24,22 +29,24 @@ export const TemplateFilters: React.FC<TemplateFiltersProps> = ({
   typeFilter,
   appEntryFilter,
   onTypeFilterChange,
-  onAppEntryFilterChange
+  onAppEntryFilterChange,
 }) => {
   return (
     <Box sx={{ mb: 2 }}>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        <FilterList sx={{ verticalAlign: 'middle', mr: 1 }} />
+        <FilterList sx={{ verticalAlign: "middle", mr: 1 }} />
         筛选器
       </Typography>
-      
+
       <Stack spacing={2}>
         <FormControl fullWidth size="small">
           <InputLabel>模板类型</InputLabel>
           <Select
             value={typeFilter}
             label="模板类型"
-            onChange={(e) => onTypeFilterChange(e.target.value as TemplateType | 'ALL')}
+            onChange={(e) =>
+              onTypeFilterChange(e.target.value as TemplateType | "ALL")
+            }
           >
             <MenuItem value="ALL">全部类型</MenuItem>
             {TEMPLATE_TYPES.map((type) => (

@@ -1,42 +1,38 @@
-import React from 'react';
-import {
-  Box,
-  Alert,
-  Snackbar
-} from '@mui/material';
+import type React from "react";
+import { Box, Alert, Snackbar } from "@mui/material";
 
-import type { Template, TemplateData } from '@/types';
-import { API_ROUTES } from '@/constants';
-import { api } from '@/utils';
-import { useAuth } from '@/hooks/useAuth';
-import { useTemplateManagement } from '@/hooks/useTemplateManagement';
-import { AppHeader } from '@/components/layout/AppHeader';
-import { TemplateSidebar } from '@/components/layout/TemplateSidebar';
-import { MainContent } from '@/components/layout/MainContent';
-import PreviewModal from '@/components/template/PreviewModal';
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import type { Template, TemplateData } from "@/types";
+import { API_ROUTES } from "@/constants";
+import { api } from "@/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { useTemplateManagement } from "@/hooks/useTemplateManagement";
+import { AppHeader } from "@/components/layout/AppHeader";
+import { TemplateSidebar } from "@/components/layout/TemplateSidebar";
+import { MainContent } from "@/components/layout/MainContent";
+import PreviewModal from "@/components/template/PreviewModal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export const EmailTemplateLayout: React.FC = () => {
   const { user, logout } = useAuth();
-  
+
   const {
     // 数据状态
     selectedTemplate,
     loading,
-    
+
     // 筛选状态
     typeFilter,
     appEntryFilter,
     filteredTemplates,
-    
+
     // 编辑状态
     isEditing,
     previewTemplate,
     deleteTemplate,
-    
+
     // 提示状态
     alert,
-    
+
     // 操作方法
     setTypeFilter,
     setAppEntryFilter,
@@ -49,20 +45,24 @@ export const EmailTemplateLayout: React.FC = () => {
     setDeleteTemplate,
     setAlert,
     setIsEditing,
-    setSelectedTemplate
+    setSelectedTemplate,
   } = useTemplateManagement();
 
   // 处理预览模板 - 需要包装以匹配接口
   const handlePreviewTemplateFromList = async (template: Template) => {
     try {
       const response = await api.get<TemplateData>(
-        API_ROUTES.TEMPLATES.BY_TYPE_AND_ID(template.type, template.templateId, template.appEntry)
+        API_ROUTES.TEMPLATES.BY_TYPE_AND_ID(
+          template.type,
+          template.templateId,
+          template.appEntry,
+        ),
       );
       if (response.success && response.data) {
         handlePreviewTemplate(response.data);
       }
-    } catch (error) {
-      setAlert({ type: 'error', message: '加载模板详情失败' });
+    } catch (_error) {
+      setAlert({ type: "error", message: "加载模板详情失败" });
     }
   };
 
@@ -73,12 +73,9 @@ export const EmailTemplateLayout: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       {/* 顶部导航栏 */}
-      <AppHeader 
-        user={user} 
-        onLogout={logout} 
-      />
+      <AppHeader user={user} onLogout={logout} />
 
       {/* 侧边栏 */}
       <TemplateSidebar
@@ -129,12 +126,12 @@ export const EmailTemplateLayout: React.FC = () => {
         open={!!alert}
         autoHideDuration={4000}
         onClose={() => setAlert(null)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
           onClose={() => setAlert(null)}
           severity={alert?.type}
-          sx={{ width: '100%' }}
+          sx={{ width: "100%" }}
         >
           {alert?.message}
         </Alert>

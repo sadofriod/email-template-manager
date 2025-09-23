@@ -1,4 +1,8 @@
-import { templateService, ValidTemplateType, ValidAppEntry } from './templateService';
+import {
+  templateService,
+  type ValidTemplateType,
+  type ValidAppEntry,
+} from "./templateService";
 
 /**
  * Example usage of the Template Service
@@ -9,16 +13,19 @@ import { templateService, ValidTemplateType, ValidAppEntry } from './templateSer
 export async function exampleListAllTemplates() {
   try {
     const response = await templateService.listTemplates();
-    
+
     if (response.success && response.data) {
-      console.log(`Found ${response.data.count} templates:`, response.data.data);
+      console.log(
+        `Found ${response.data.count} templates:`,
+        response.data.data,
+      );
       return response.data.data;
     } else {
-      console.error('Failed to fetch templates:', response.error);
+      console.error("Failed to fetch templates:", response.error);
       return [];
     }
   } catch (error) {
-    console.error('Error listing templates:', error);
+    console.error("Error listing templates:", error);
     return [];
   }
 }
@@ -27,9 +34,12 @@ export async function exampleListAllTemplates() {
 export async function exampleListTemplatesByType(type: ValidTemplateType) {
   try {
     const response = await templateService.listTemplates(type);
-    
+
     if (response.success && response.data) {
-      console.log(`Found ${response.data.count} ${type} templates:`, response.data.data);
+      console.log(
+        `Found ${response.data.count} ${type} templates:`,
+        response.data.data,
+      );
       return response.data.data;
     } else {
       console.error(`Failed to fetch ${type} templates:`, response.error);
@@ -43,22 +53,22 @@ export async function exampleListTemplatesByType(type: ValidTemplateType) {
 
 // Example 3: Get a specific template
 export async function exampleGetTemplate(
-  type: ValidTemplateType, 
-  id: string, 
-  appEntry: ValidAppEntry
+  type: ValidTemplateType,
+  id: string,
+  appEntry: ValidAppEntry,
 ) {
   try {
     const response = await templateService.getTemplate(type, id, appEntry);
-    
+
     if (response.success && response.data) {
-      console.log('Template details:', response.data);
+      console.log("Template details:", response.data);
       return response.data;
     } else {
-      console.error('Failed to fetch template:', response.error);
+      console.error("Failed to fetch template:", response.error);
       return null;
     }
   } catch (error) {
-    console.error('Error fetching template:', error);
+    console.error("Error fetching template:", error);
     return null;
   }
 }
@@ -67,14 +77,14 @@ export async function exampleGetTemplate(
 export async function exampleCreateTemplate() {
   try {
     const newTemplate = {
-      templateId: 'welcome-email-v2',
-      type: 'WELCOME' as ValidTemplateType,
-      name: 'Welcome Email Template v2',
-      description: 'Updated welcome email template with better design',
-      version: '2.0.0',
-      tags: ['welcome', 'onboarding', 'user'],
-      author: 'admin@example.com',
-      subject: 'Welcome to {{companyName}}!',
+      templateId: "welcome-email-v2",
+      type: "WELCOME" as ValidTemplateType,
+      name: "Welcome Email Template v2",
+      description: "Updated welcome email template with better design",
+      version: "2.0.0",
+      tags: ["welcome", "onboarding", "user"],
+      author: "admin@example.com",
+      subject: "Welcome to {{companyName}}!",
       htmlContent: `
         <html>
           <body style="font-family: Arial, sans-serif; margin: 0; padding: 20px;">
@@ -108,22 +118,22 @@ export async function exampleCreateTemplate() {
         Best regards,
         The {{companyName}} Team
       `,
-      variables: ['userName', 'companyName', 'supportLink'],
-      appEntry: 'freezer' as ValidAppEntry,
-      from: 'welcome@freezer.com'
+      variables: ["userName", "companyName", "supportLink"],
+      appEntry: "freezer" as ValidAppEntry,
+      from: "welcome@freezer.com",
     };
 
     const response = await templateService.createTemplate(newTemplate);
-    
+
     if (response.success && response.data) {
-      console.log('Template created successfully:', response.data);
+      console.log("Template created successfully:", response.data);
       return response.data;
     } else {
-      console.error('Failed to create template:', response.error);
+      console.error("Failed to create template:", response.error);
       return null;
     }
   } catch (error) {
-    console.error('Error creating template:', error);
+    console.error("Error creating template:", error);
     return null;
   }
 }
@@ -131,16 +141,16 @@ export async function exampleCreateTemplate() {
 // Example 5: Update an existing template
 export async function exampleUpdateTemplate(
   type: ValidTemplateType,
-  id: string
+  id: string,
 ) {
   try {
     const updateData = {
-      name: 'Updated Welcome Email Template',
-      description: 'Updated welcome email template with new content',
-      version: '2.1.0',
-      tags: ['welcome', 'onboarding', 'user', 'updated'],
-      author: 'admin@example.com',
-      subject: 'Welcome to {{companyName}} - Get Started!',
+      name: "Updated Welcome Email Template",
+      description: "Updated welcome email template with new content",
+      version: "2.1.0",
+      tags: ["welcome", "onboarding", "user", "updated"],
+      author: "admin@example.com",
+      subject: "Welcome to {{companyName}} - Get Started!",
       htmlContent: `
         <html>
           <body style="font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5;">
@@ -177,22 +187,22 @@ export async function exampleUpdateTemplate(
         Best regards,
         The {{companyName}} Team
       `,
-      variables: ['userName', 'companyName', 'supportLink'],
-      appEntry: 'freezer' as ValidAppEntry,
-      from: 'welcome@freezer.com'
+      variables: ["userName", "companyName", "supportLink"],
+      appEntry: "freezer" as ValidAppEntry,
+      from: "welcome@freezer.com",
     };
 
     const response = await templateService.updateTemplate(type, id, updateData);
-    
+
     if (response.success && response.data) {
-      console.log('Template updated successfully:', response.data);
+      console.log("Template updated successfully:", response.data);
       return response.data;
     } else {
-      console.error('Failed to update template:', response.error);
+      console.error("Failed to update template:", response.error);
       return null;
     }
   } catch (error) {
-    console.error('Error updating template:', error);
+    console.error("Error updating template:", error);
     return null;
   }
 }
@@ -201,28 +211,33 @@ export async function exampleUpdateTemplate(
 export async function examplePreviewTemplate(
   type: ValidTemplateType,
   id: string,
-  appEntry: ValidAppEntry
+  appEntry: ValidAppEntry,
 ) {
   try {
     const sampleData = {
       data: {
-        userName: 'John Doe',
-        companyName: 'Freezer App',
-        supportLink: 'https://freezer.com/support'
-      }
+        userName: "John Doe",
+        companyName: "Freezer App",
+        supportLink: "https://freezer.com/support",
+      },
     };
 
-    const response = await templateService.previewTemplate(type, id, appEntry, sampleData);
-    
+    const response = await templateService.previewTemplate(
+      type,
+      id,
+      appEntry,
+      sampleData,
+    );
+
     if (response.success && response.data) {
-      console.log('Template preview:', response.data);
+      console.log("Template preview:", response.data);
       return response.data;
     } else {
-      console.error('Failed to preview template:', response.error);
+      console.error("Failed to preview template:", response.error);
       return null;
     }
   } catch (error) {
-    console.error('Error previewing template:', error);
+    console.error("Error previewing template:", error);
     return null;
   }
 }
@@ -231,73 +246,82 @@ export async function examplePreviewTemplate(
 export async function exampleDeleteTemplate(
   type: ValidTemplateType,
   id: string,
-  appEntry: ValidAppEntry
+  appEntry: ValidAppEntry,
 ) {
   try {
     const response = await templateService.deleteTemplate(type, id, appEntry);
-    
+
     if (response.success && response.data) {
-      console.log('Template deleted successfully:', response.data);
+      console.log("Template deleted successfully:", response.data);
       return true;
     } else {
-      console.error('Failed to delete template:', response.error);
+      console.error("Failed to delete template:", response.error);
       return false;
     }
   } catch (error) {
-    console.error('Error deleting template:', error);
+    console.error("Error deleting template:", error);
     return false;
   }
 }
 
 // Example 8: Complete workflow - Create, Preview, Update, and Delete
 export async function exampleCompleteWorkflow() {
-  console.log('Starting complete template workflow...');
+  console.log("Starting complete template workflow...");
 
   // 1. Create a new template
-  console.log('\n1. Creating template...');
+  console.log("\n1. Creating template...");
   const createdTemplate = await exampleCreateTemplate();
   if (!createdTemplate) {
-    console.log('Failed to create template, stopping workflow');
+    console.log("Failed to create template, stopping workflow");
     return;
   }
 
   const templateId = createdTemplate.templateId;
-  const templateType: ValidTemplateType = createdTemplate.type as ValidTemplateType;
-  const appEntry: ValidAppEntry = 'freezer';
+  const templateType: ValidTemplateType =
+    createdTemplate.type as ValidTemplateType;
+  const appEntry: ValidAppEntry = "freezer";
 
   // 2. Get the created template
-  console.log('\n2. Fetching created template...');
-  const fetchedTemplate = await exampleGetTemplate(templateType, templateId, appEntry);
+  console.log("\n2. Fetching created template...");
+  const fetchedTemplate = await exampleGetTemplate(
+    templateType,
+    templateId,
+    appEntry,
+  );
   if (!fetchedTemplate) {
-    console.log('Failed to fetch template');
+    console.log("Failed to fetch template");
     return;
   }
 
   // 3. Preview the template
-  console.log('\n3. Previewing template...');
-  const preview = await examplePreviewTemplate(templateType, templateId, appEntry);
+  console.log("\n3. Previewing template...");
+  const preview = await examplePreviewTemplate(
+    templateType,
+    templateId,
+    appEntry,
+  );
   if (!preview) {
-    console.log('Failed to preview template');
+    console.log("Failed to preview template");
     return;
   }
 
   // 4. Update the template
-  console.log('\n4. Updating template...');
+  console.log("\n4. Updating template...");
   const updatedTemplate = await exampleUpdateTemplate(templateType, templateId);
   if (!updatedTemplate) {
-    console.log('Failed to update template');
+    console.log("Failed to update template");
     return;
   }
 
   // 5. List all templates to see our changes
-  console.log('\n5. Listing all templates...');
+  console.log("\n5. Listing all templates...");
   await exampleListAllTemplates();
 
   // 6. Delete the template (optional - uncomment if you want to clean up)
   // console.log('\n6. Deleting template...');
   // await exampleDeleteTemplate(templateType, templateId, appEntry);
 
-  console.log('\nWorkflow completed successfully!');
+  console.log("\nWorkflow completed successfully!");
 }
 
 // Helper functions for UI components
@@ -326,5 +350,5 @@ export const templateExamples = {
   updateTemplate: exampleUpdateTemplate,
   previewTemplate: examplePreviewTemplate,
   deleteTemplate: exampleDeleteTemplate,
-  completeWorkflow: exampleCompleteWorkflow
+  completeWorkflow: exampleCompleteWorkflow,
 };

@@ -1,58 +1,58 @@
-import { createTheme } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
+import { createTheme } from "@mui/material/styles";
+import { red } from "@mui/material/colors";
 
 // Create a theme instance
 const theme = createTheme({
   palette: {
-    mode: 'light',
+    mode: "light",
     primary: {
-      main: '#007bff',
-      dark: '#0056b3',
-      light: '#4da3ff',
+      main: "#007bff",
+      dark: "#0056b3",
+      light: "#4da3ff",
     },
     secondary: {
-      main: '#6c757d',
+      main: "#6c757d",
     },
     error: {
       main: red.A400,
     },
     background: {
-      default: '#f8f9fa',
-      paper: '#ffffff',
+      default: "#f8f9fa",
+      paper: "#ffffff",
     },
   },
   typography: {
     fontFamily: [
-      'Roboto',
-      '-apple-system',
-      'BlinkMacSystemFont',
+      "Roboto",
+      "-apple-system",
+      "BlinkMacSystemFont",
       '"Segoe UI"',
       '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-    ].join(','),
+      "Arial",
+      "sans-serif",
+    ].join(","),
     h1: {
-      fontSize: '2.5rem',
+      fontSize: "2.5rem",
       fontWeight: 500,
     },
     h2: {
-      fontSize: '2rem',
+      fontSize: "2rem",
       fontWeight: 500,
     },
     h3: {
-      fontSize: '1.75rem',
+      fontSize: "1.75rem",
       fontWeight: 500,
     },
     h4: {
-      fontSize: '1.5rem',
+      fontSize: "1.5rem",
       fontWeight: 500,
     },
     h5: {
-      fontSize: '1.25rem',
+      fontSize: "1.25rem",
       fontWeight: 500,
     },
     h6: {
-      fontSize: '1rem',
+      fontSize: "1rem",
       fontWeight: 500,
     },
   },
@@ -60,24 +60,24 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none',
-          borderRadius: '0.375rem',
+          textTransform: "none",
+          borderRadius: "0.375rem",
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: '0.5rem',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          borderRadius: "0.5rem",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
         },
       },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
-          '& .MuiOutlinedInput-root': {
-            borderRadius: '0.375rem',
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "0.375rem",
           },
         },
       },
@@ -85,7 +85,7 @@ const theme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          borderRight: '1px solid #dee2e6',
+          borderRight: "1px solid #dee2e6",
         },
       },
     },

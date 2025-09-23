@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,9 +6,9 @@ import {
   DialogActions,
   Button,
   Typography,
-  Box
-} from '@mui/material';
-import { Warning } from '@mui/icons-material';
+  Box,
+} from "@mui/material";
+import { Warning } from "@mui/icons-material";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -18,24 +18,27 @@ interface ConfirmDialogProps {
   cancelText?: string;
   onConfirm: () => void;
   onCancel: () => void;
-  variant?: 'warning' | 'error' | 'info';
+  variant?: "warning" | "error" | "info";
 }
 
 export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   open,
   title,
   message,
-  confirmText = '确认',
-  cancelText = '取消',
+  confirmText = "确认",
+  cancelText = "取消",
   onConfirm,
   onCancel,
-  variant = 'warning'
+  variant = "warning",
 }) => {
   const getColor = () => {
     switch (variant) {
-      case 'error': return 'error';
-      case 'info': return 'info';
-      default: return 'warning';
+      case "error":
+        return "error";
+      case "info":
+        return "info";
+      default:
+        return "warning";
     }
   };
 
@@ -52,11 +55,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel}>{cancelText}</Button>
-        <Button
-          onClick={onConfirm}
-          variant="contained"
-          color={getColor()}
-        >
+        <Button onClick={onConfirm} variant="contained" color={getColor()}>
           {confirmText}
         </Button>
       </DialogActions>

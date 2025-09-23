@@ -1,5 +1,5 @@
-import { api } from '@/utils';
-import { ApiResponse, TemplateType } from '@/types';
+import { api } from "@/utils";
+import type { ApiResponse, TemplateType } from "@/types";
 
 // API response types based on the documentation
 interface TemplateListItem {
@@ -69,34 +69,40 @@ interface PreviewTemplateRequest {
 }
 
 // Valid app entries according to the API documentation
-type ValidAppEntry = 'freezer' | 'tennis' | 'qaBot';
+type ValidAppEntry = "freezer" | "tennis" | "qaBot";
 
 // Valid template types according to the API documentation
-type ValidTemplateType = 
-  | 'VERIFICATION'
-  | 'WELCOME'
-  | 'PASSWORD_RESET'
-  | 'NOTIFICATION'
-  | 'NEWSLETTER'
-  | 'INVOICE'
-  | 'REMINDER';
+type ValidTemplateType =
+  | "VERIFICATION"
+  | "WELCOME"
+  | "PASSWORD_RESET"
+  | "NOTIFICATION"
+  | "NEWSLETTER"
+  | "INVOICE"
+  | "REMINDER";
 
 class TemplateService {
-  private readonly baseUrl = '/api/email-templates';
+  private readonly baseUrl = "/api/email-templates";
 
   /**
    * List all email templates, optionally filtered by type
    * GET /api/email-templates?type={type}
    */
-  async listTemplates(type?: ValidTemplateType): Promise<ApiResponse<{ data: TemplateListItem[], count: number }>> {
+  async listTemplates(
+    type?: ValidTemplateType,
+  ): Promise<ApiResponse<{ data: TemplateListItem[]; count: number }>> {
     try {
-      const queryParams = type ? `?type=${type}` : '';
-      const response = await api.get<{ data: TemplateListItem[], count: number }>(`${this.baseUrl}${queryParams}`);
+      const queryParams = type ? `?type=${type}` : "";
+      const response = await api.get<{
+        data: TemplateListItem[];
+        count: number;
+      }>(`${this.baseUrl}${queryParams}`);
       return response;
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch templates'
+        error:
+          error instanceof Error ? error.message : "Failed to fetch templates",
       };
     }
   }
@@ -106,19 +112,20 @@ class TemplateService {
    * GET /api/email-templates/:type/:id?appEntry={appEntry}
    */
   async getTemplate(
-    type: ValidTemplateType, 
-    id: string, 
-    appEntry: ValidAppEntry
+    type: ValidTemplateType,
+    id: string,
+    appEntry: ValidAppEntry,
   ): Promise<ApiResponse<TemplateDetail>> {
     try {
       const response = await api.get<TemplateDetail>(
-        `${this.baseUrl}/${type}/${id}?appEntry=${appEntry}`
+        `${this.baseUrl}/${type}/${id}?appEntry=${appEntry}`,
       );
       return response;
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch template'
+        error:
+          error instanceof Error ? error.message : "Failed to fetch template",
       };
     }
   }
@@ -127,17 +134,20 @@ class TemplateService {
    * Create a new email template
    * POST /api/email-templates
    */
-  async createTemplate(templateData: CreateTemplateRequest): Promise<ApiResponse<{ templateId: string, type: TemplateType }>> {
+  async createTemplate(
+    templateData: CreateTemplateRequest,
+  ): Promise<ApiResponse<{ templateId: string; type: TemplateType }>> {
     try {
-      const response = await api.post<{ templateId: string, type: TemplateType }>(
-        this.baseUrl,
-        templateData
-      );
+      const response = await api.post<{
+        templateId: string;
+        type: TemplateType;
+      }>(this.baseUrl, templateData);
       return response;
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create template'
+        error:
+          error instanceof Error ? error.message : "Failed to create template",
       };
     }
   }
@@ -149,18 +159,19 @@ class TemplateService {
   async updateTemplate(
     type: ValidTemplateType,
     id: string,
-    templateData: UpdateTemplateRequest
-  ): Promise<ApiResponse<{ templateId: string, type: TemplateType }>> {
+    templateData: UpdateTemplateRequest,
+  ): Promise<ApiResponse<{ templateId: string; type: TemplateType }>> {
     try {
-      const response = await api.put<{ templateId: string, type: TemplateType }>(
-        `${this.baseUrl}/${type}/${id}`,
-        templateData
-      );
+      const response = await api.put<{
+        templateId: string;
+        type: TemplateType;
+      }>(`${this.baseUrl}/${type}/${id}`, templateData);
       return response;
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to update template'
+        error:
+          error instanceof Error ? error.message : "Failed to update template",
       };
     }
   }
@@ -173,18 +184,31 @@ class TemplateService {
     type: ValidTemplateType,
     id: string,
     appEntry: ValidAppEntry,
-    previewData: PreviewTemplateRequest
-  ): Promise<ApiResponse<{ subject: string, htmlContent: string, textContent: string, from: string }>> {
+    previewData: PreviewTemplateRequest,
+  ): Promise<
+    ApiResponse<{
+      subject: string;
+      htmlContent: string;
+      textContent: string;
+      from: string;
+    }>
+  > {
     try {
-      const response = await api.post<{ subject: string, htmlContent: string, textContent: string, from: string }>(
+      const response = await api.post<{
+        subject: string;
+        htmlContent: string;
+        textContent: string;
+        from: string;
+      }>(
         `${this.baseUrl}/${type}/${id}/preview?appEntry=${appEntry}`,
-        previewData
+        previewData,
       );
       return response;
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to preview template'
+        error:
+          error instanceof Error ? error.message : "Failed to preview template",
       };
     }
   }
@@ -196,17 +220,19 @@ class TemplateService {
   async deleteTemplate(
     type: ValidTemplateType,
     id: string,
-    appEntry: ValidAppEntry
-  ): Promise<ApiResponse<{ templateId: string, type: TemplateType }>> {
+    appEntry: ValidAppEntry,
+  ): Promise<ApiResponse<{ templateId: string; type: TemplateType }>> {
     try {
-      const response = await api.delete<{ templateId: string, type: TemplateType }>(
-        `${this.baseUrl}/${type}/${id}?appEntry=${appEntry}`
-      );
+      const response = await api.delete<{
+        templateId: string;
+        type: TemplateType;
+      }>(`${this.baseUrl}/${type}/${id}?appEntry=${appEntry}`);
       return response;
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete template'
+        error:
+          error instanceof Error ? error.message : "Failed to delete template",
       };
     }
   }
@@ -216,13 +242,13 @@ class TemplateService {
    */
   isValidTemplateType(type: string): type is ValidTemplateType {
     const validTypes: ValidTemplateType[] = [
-      'VERIFICATION',
-      'WELCOME',
-      'PASSWORD_RESET',
-      'NOTIFICATION',
-      'NEWSLETTER',
-      'INVOICE',
-      'REMINDER'
+      "VERIFICATION",
+      "WELCOME",
+      "PASSWORD_RESET",
+      "NOTIFICATION",
+      "NEWSLETTER",
+      "INVOICE",
+      "REMINDER",
     ];
     return validTypes.includes(type as ValidTemplateType);
   }
@@ -231,7 +257,7 @@ class TemplateService {
    * Helper method to validate app entry
    */
   isValidAppEntry(appEntry: string): appEntry is ValidAppEntry {
-    const validEntries: ValidAppEntry[] = ['freezer', 'tennis', 'qaBot'];
+    const validEntries: ValidAppEntry[] = ["freezer", "tennis", "qaBot"];
     return validEntries.includes(appEntry as ValidAppEntry);
   }
 
@@ -240,13 +266,16 @@ class TemplateService {
    */
   getTemplateTypeOptions() {
     return [
-      { value: 'VERIFICATION' as ValidTemplateType, label: 'Email Verification' },
-      { value: 'WELCOME' as ValidTemplateType, label: 'Welcome Email' },
-      { value: 'PASSWORD_RESET' as ValidTemplateType, label: 'Password Reset' },
-      { value: 'NOTIFICATION' as ValidTemplateType, label: 'Notification' },
-      { value: 'NEWSLETTER' as ValidTemplateType, label: 'Newsletter' },
-      { value: 'INVOICE' as ValidTemplateType, label: 'Invoice' },
-      { value: 'REMINDER' as ValidTemplateType, label: 'Reminder' }
+      {
+        value: "VERIFICATION" as ValidTemplateType,
+        label: "Email Verification",
+      },
+      { value: "WELCOME" as ValidTemplateType, label: "Welcome Email" },
+      { value: "PASSWORD_RESET" as ValidTemplateType, label: "Password Reset" },
+      { value: "NOTIFICATION" as ValidTemplateType, label: "Notification" },
+      { value: "NEWSLETTER" as ValidTemplateType, label: "Newsletter" },
+      { value: "INVOICE" as ValidTemplateType, label: "Invoice" },
+      { value: "REMINDER" as ValidTemplateType, label: "Reminder" },
     ];
   }
 
@@ -255,9 +284,9 @@ class TemplateService {
    */
   getAppEntryOptions() {
     return [
-      { value: 'freezer' as ValidAppEntry, label: 'Freezer Application' },
-      { value: 'tennis' as ValidAppEntry, label: 'Tennis Application' },
-      { value: 'qaBot' as ValidAppEntry, label: 'QA Bot Application' }
+      { value: "freezer" as ValidAppEntry, label: "Freezer Application" },
+      { value: "tennis" as ValidAppEntry, label: "Tennis Application" },
+      { value: "qaBot" as ValidAppEntry, label: "QA Bot Application" },
     ];
   }
 }
@@ -273,5 +302,5 @@ export type {
   TemplateDetail,
   CreateTemplateRequest,
   UpdateTemplateRequest,
-  PreviewTemplateRequest
+  PreviewTemplateRequest,
 };

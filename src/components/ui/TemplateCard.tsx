@@ -1,15 +1,15 @@
-import React from 'react';
+import type React from "react";
 import {
   Card,
   CardContent,
   Typography,
   Box,
   IconButton,
-  Chip
-} from '@mui/material';
-import { Edit, Delete, Visibility } from '@mui/icons-material';
-import { Template } from '@/types';
-import { format } from '@/utils';
+  Chip,
+} from "@mui/material";
+import { Edit, Delete, Visibility } from "@mui/icons-material";
+import type { Template } from "@/types";
+import { format } from "@/utils";
 
 interface TemplateCardProps {
   template: Template;
@@ -22,13 +22,17 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
   template,
   onEdit,
   onDelete,
-  onPreview
+  onPreview,
 }) => {
-  
   return (
     <Card>
       <CardContent>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          mb={2}
+        >
           <Typography variant="h6" component="h3">
             {template.name}
           </Typography>
@@ -44,7 +48,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
             </IconButton>
           </Box>
         </Box>
-        
+
         <Box display="flex" gap={1} mb={2}>
           <Chip
             label={format.templateType(template.type)}
@@ -63,7 +67,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
         <Typography variant="body2" color="text.secondary" mb={1}>
           ID: {template.templateId}
         </Typography>
-        
+
         <Typography variant="body2" color="text.secondary" mb={1}>
           版本: {template.version}
         </Typography>

@@ -1,26 +1,20 @@
-import React from 'react';
-import {
-  Box,
-  Drawer,
-  Toolbar,
-  Button,
-  Divider
-} from '@mui/material';
-import { Add } from '@mui/icons-material';
+import type React from "react";
+import { Box, Drawer, Toolbar, Button, Divider } from "@mui/material";
+import { Add } from "@mui/icons-material";
 
-import type { Template, TemplateType } from '@/types';
-import { TemplateFilters } from '@/components/template/TemplateFilters';
-import { TemplateList } from '@/components/template/TemplateList';
+import type { Template, TemplateType } from "@/types";
+import { TemplateFilters } from "@/components/template/TemplateFilters";
+import { TemplateList } from "@/components/template/TemplateList";
 
 const DRAWER_WIDTH = 350;
 
 interface TemplateSidebarProps {
   templates: Template[];
   loading: boolean;
-  typeFilter: TemplateType | 'ALL';
+  typeFilter: TemplateType | "ALL";
   appEntryFilter: string;
   onCreateTemplate: () => void;
-  onTypeFilterChange: (type: TemplateType | 'ALL') => void;
+  onTypeFilterChange: (type: TemplateType | "ALL") => void;
   onAppEntryFilterChange: (appEntry: string) => void;
   onEditTemplate: (template: Template) => void;
   onDeleteTemplate: (template: Template) => void;
@@ -37,7 +31,7 @@ export const TemplateSidebar: React.FC<TemplateSidebarProps> = ({
   onAppEntryFilterChange,
   onEditTemplate,
   onDeleteTemplate,
-  onPreviewTemplate
+  onPreviewTemplate,
 }) => {
   return (
     <Drawer
@@ -45,14 +39,14 @@ export const TemplateSidebar: React.FC<TemplateSidebarProps> = ({
       sx={{
         width: DRAWER_WIDTH,
         flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width: DRAWER_WIDTH,
-          boxSizing: 'border-box',
+          boxSizing: "border-box",
         },
       }}
     >
       <Toolbar />
-      <Box sx={{ overflow: 'auto', p: 2 }}>
+      <Box sx={{ overflow: "auto", p: 2 }}>
         {/* 新建模板按钮 */}
         <Button
           variant="contained"

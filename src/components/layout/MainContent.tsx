@@ -1,12 +1,8 @@
-import React from 'react';
-import {
-  Box,
-  Toolbar,
-  Typography
-} from '@mui/material';
+import type React from "react";
+import { Box, Toolbar, Typography } from "@mui/material";
 
-import type { TemplateData } from '@/types';
-import { TemplateEditor } from '@/components/template/TemplateEditor';
+import type { TemplateData } from "@/types";
+import { TemplateEditor } from "@/components/template/TemplateEditor";
 
 interface MainContentProps {
   isEditing: boolean;
@@ -21,12 +17,12 @@ export const MainContent: React.FC<MainContentProps> = ({
   selectedTemplate,
   onSaveTemplate,
   onCancelEdit,
-  onPreviewTemplate
+  onPreviewTemplate,
 }) => {
   return (
     <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
       <Toolbar />
-      
+
       {isEditing ? (
         <TemplateEditor
           templateData={selectedTemplate}

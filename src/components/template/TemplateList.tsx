@@ -1,14 +1,9 @@
-import React from 'react';
-import {
-  Box,
-  Typography,
-  List,
-  ListItem
-} from '@mui/material';
-import { Email } from '@mui/icons-material';
+import type React from "react";
+import { Box, Typography, List, ListItem } from "@mui/material";
+import { Email } from "@mui/icons-material";
 
-import type { Template } from '@/types';
-import { TemplateCard } from '@/components/ui/TemplateCard';
+import type { Template } from "@/types";
+import { TemplateCard } from "@/components/ui/TemplateCard";
 
 interface TemplateListProps {
   templates: Template[];
@@ -23,12 +18,12 @@ export const TemplateList: React.FC<TemplateListProps> = ({
   loading,
   onEdit,
   onDelete,
-  onPreview
+  onPreview,
 }) => {
   return (
     <Box>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        <Email sx={{ verticalAlign: 'middle', mr: 1 }} />
+        <Email sx={{ verticalAlign: "middle", mr: 1 }} />
         模板列表 ({templates.length})
       </Typography>
 

@@ -3,7 +3,7 @@ export interface User {
   id: number;
   email: string;
   name: string;
-  role: 'USER' | 'ADMIN';
+  role: "USER" | "ADMIN";
   emailVerified?: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -12,7 +12,7 @@ export interface User {
 // 模板变量类型
 export interface Variable {
   name: string;
-  type: 'string' | 'number' | 'boolean' | 'date' | 'url';
+  type: "string" | "number" | "boolean" | "date" | "url";
   description: string;
   required: boolean;
   defaultValue?: string;
@@ -56,27 +56,27 @@ export interface TemplateData {
 }
 
 // 枚举类型
-export type TemplateType = 
-  | 'VERIFICATION'
-  | 'WELCOME'
-  | 'PASSWORD_RESET'
-  | 'NOTIFICATION'
-  | 'NEWSLETTER'
-  | 'INVOICE'
-  | 'REMINDER'
-  | 'PROMOTIONAL'
-  | 'TRANSACTIONAL'
-  | 'SYSTEM'
-  | 'CUSTOM';
+export type TemplateType =
+  | "VERIFICATION"
+  | "WELCOME"
+  | "PASSWORD_RESET"
+  | "NOTIFICATION"
+  | "NEWSLETTER"
+  | "INVOICE"
+  | "REMINDER"
+  | "PROMOTIONAL"
+  | "TRANSACTIONAL"
+  | "SYSTEM"
+  | "CUSTOM";
 
-export type AppEntry = 
-  | 'WEB_APP'
-  | 'MOBILE_APP'
-  | 'ADMIN_PANEL'
-  | 'API_SERVICE'
-  | 'MARKETING';
+export type AppEntry =
+  | "WEB_APP"
+  | "MOBILE_APP"
+  | "ADMIN_PANEL"
+  | "API_SERVICE"
+  | "MARKETING";
 
-export type VariableType = 'string' | 'number' | 'boolean' | 'date' | 'url';
+export type VariableType = "string" | "number" | "boolean" | "date" | "url";
 
 // API 响应类型
 export interface ApiResponse<T = any> {

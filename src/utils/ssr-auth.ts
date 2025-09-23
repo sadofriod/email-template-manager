@@ -1,14 +1,20 @@
-import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { getCookie } from 'cookies-next';
-import { User } from '@/types';
+import type {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+} from "next";
+import { getCookie } from "cookies-next";
+import type { User } from "@/types";
 
 // SSR认证检查函数
-export async function checkServerSideAuth(context: GetServerSidePropsContext): Promise<{
+export async function checkServerSideAuth(
+  context: GetServerSidePropsContext,
+): Promise<{
   user: User | null;
   shouldRedirect?: boolean;
   redirectDestination?: string;
 }> {
-  const token = getCookie('auth_token', { req: context.req, res: context.res });
+  const token = getCookie("auth_token", { req: context.req, res: context.res });
 
   if (!token) {
     return {
@@ -18,12 +24,15 @@ export async function checkServerSideAuth(context: GetServerSidePropsContext): P
 
   try {
     // 在服务端验证token
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || ''}/api/users/me`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL || ""}/api/users/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -38,10 +47,10 @@ export async function checkServerSideAuth(context: GetServerSidePropsContext): P
     return {
       user: null,
       shouldRedirect: true,
-      redirectDestination: '/',
+      redirectDestination: "/",
     };
   } catch (error) {
-    console.error('SSR auth check failed:', error);
+    console.error("SSR auth check failed:", error);
     return {
       user: null,
     };
@@ -50,11 +59,13 @@ export async function checkServerSideAuth(context: GetServerSidePropsContext): P
 
 // 受保护页面的HOC
 export function withAuth<P extends Record<string, any>>(
-  getServerSideProps?: GetServerSideProps<P>
+  getServerSideProps?: GetServerSideProps<P>,
 ): GetServerSideProps<P & { user: User | null }> {
-  return async (context): Promise<GetServerSidePropsResult<P & { user: User | null }>> => {
+  return async (
+    context,
+  ): Promise<GetServerSidePropsResult<P & { user: User | null }>> => {
     const authResult = await checkServerSideAuth(context);
-    
+
     if (authResult.shouldRedirect && authResult.redirectDestination) {
       return {
         redirect: {
@@ -65,10 +76,10 @@ export function withAuth<P extends Record<string, any>>(
     }
 
     // 如果没有用户且访问受保护页面，重定向到登录
-    if (!authResult.user && context.resolvedUrl !== '/') {
+    if (!authResult.user && context.resolvedUrl !== "/") {
       return {
         redirect: {
-          destination: '/',
+          destination: "/",
           permanent: false,
         },
       };
@@ -78,9 +89,9 @@ export function withAuth<P extends Record<string, any>>(
     let originalProps = {} as P;
     if (getServerSideProps) {
       const result = await getServerSideProps(context);
-      if ('props' in result) {
+      if ("props" in result) {
         originalProps = await result.props;
-      } else if ('redirect' in result || 'notFound' in result) {
+      } else if ("redirect" in result || "notFound" in result) {
         return result as GetServerSidePropsResult<P & { user: User | null }>;
       }
     }
@@ -96,11 +107,13 @@ export function withAuth<P extends Record<string, any>>(
 
 // 仅限管理员访问的HOC
 export function withAdminAuth<P extends Record<string, any>>(
-  getServerSideProps?: GetServerSideProps<P>
+  getServerSideProps?: GetServerSideProps<P>,
 ): GetServerSideProps<P & { user: User | null }> {
-  return async (context): Promise<GetServerSidePropsResult<P & { user: User | null }>> => {
+  return async (
+    context,
+  ): Promise<GetServerSidePropsResult<P & { user: User | null }>> => {
     const authResult = await checkServerSideAuth(context);
-    
+
     if (authResult.shouldRedirect && authResult.redirectDestination) {
       return {
         redirect: {
@@ -111,10 +124,10 @@ export function withAdminAuth<P extends Record<string, any>>(
     }
 
     // 检查管理员权限
-    if (!authResult.user || authResult.user.role !== 'ADMIN') {
+    if (!authResult.user || authResult.user.role !== "ADMIN") {
       return {
         redirect: {
-          destination: '/unauthorized',
+          destination: "/unauthorized",
           permanent: false,
         },
       };
@@ -124,9 +137,9 @@ export function withAdminAuth<P extends Record<string, any>>(
     let originalProps = {} as P;
     if (getServerSideProps) {
       const result = await getServerSideProps(context);
-      if ('props' in result) {
+      if ("props" in result) {
         originalProps = await result.props;
-      } else if ('redirect' in result || 'notFound' in result) {
+      } else if ("redirect" in result || "notFound" in result) {
         return result as GetServerSidePropsResult<P & { user: User | null }>;
       }
     }

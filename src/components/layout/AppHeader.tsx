@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import type React from "react";
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -8,24 +9,18 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  ListItemText
-} from '@mui/material';
-import {
-  AccountCircle,
-  Logout
-} from '@mui/icons-material';
+  ListItemText,
+} from "@mui/material";
+import { AccountCircle, Logout } from "@mui/icons-material";
 
-import type { User } from '@/types';
+import type { User } from "@/types";
 
 interface AppHeaderProps {
   user: User | null;
   onLogout: () => void;
 }
 
-export const AppHeader: React.FC<AppHeaderProps> = ({
-  user,
-  onLogout
-}) => {
+export const AppHeader: React.FC<AppHeaderProps> = ({ user, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -43,12 +38,15 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
 
   return (
     <>
-      <AppBar position="fixed" sx={{ zIndex: theme => theme.zIndex.drawer + 1 }}>
+      <AppBar
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <Toolbar>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             邮件模板管理系统
           </Typography>
-          
+
           <Box display="flex" alignItems="center">
             <Typography variant="body2" sx={{ mr: 2 }}>
               {user?.email}
@@ -65,8 +63,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleUserMenuClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
