@@ -14,13 +14,13 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Email, Lock } from "@mui/icons-material";
-import { useTranslation } from "react-i18next";
+import { useTranslationSafe } from "@/hooks/useTranslationSafe";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 
 const LoginForm: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, isMounted } = useTranslationSafe();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, loading, error } = useAuth();
@@ -33,6 +33,37 @@ const LoginForm: React.FC = () => {
     // No need for manual navigation here
     push("/email-templates");
   };
+
+  // Prevent hydration mismatch by not rendering translations until mounted
+  if (!isMounted) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        }}
+      >
+        <Container maxWidth="sm">
+          <Card
+            sx={{
+              borderRadius: 3,
+              boxShadow: "0 15px 35px rgba(0, 0, 0, 0.1)",
+              p: 2,
+            }}
+          >
+            <CardContent>
+              <Box sx={{ textAlign: "center" }}>
+                <CircularProgress />
+              </Box>
+            </CardContent>
+          </Card>
+        </Container>
+      </Box>
+    );
+  }
 
   return (
     <Box

@@ -7,11 +7,10 @@ export function useAuth() {
 
   useEffect(() => {
     // 订阅状态变化
-    const unsubscribe = authService.subscribe(() => {
+    authService.subscribe(() => {      
       setState(authService.getState());
     });
 
-    return unsubscribe;
   }, []);
 
   return {

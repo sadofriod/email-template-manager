@@ -1,12 +1,11 @@
-import type React from "react";
+
 import { useEffect } from "react";
 import Head from "next/head";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "@/hooks/useAuth";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { EmailTemplateLayout } from "@/components/layout/EmailTemplateLayout";
-import LoginForm from "@/components/auth/LoginForm";
 import { authService } from "@/services/auth";
 
 const theme = createTheme();
@@ -18,20 +17,6 @@ export default function Home() {
   useEffect(() => {
     authService.initialize();
   }, []);
-
-  const AppContent: React.FC = () => {
-    const { user, loading } = useAuth();
-
-    if (loading) {
-      return <div>{t('auth.loading')}</div>;
-    }
-
-    if (!user) {
-      return <LoginForm />;
-    }
-
-    return <EmailTemplateLayout />;
-  };
 
   return (
     <>
@@ -47,7 +32,9 @@ export default function Home() {
 
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AppContent />
+        <ProtectedRoute>
+          <EmailTemplateLayout />
+        </ProtectedRoute>
       </ThemeProvider>
     </>
   );

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import type { Template, TemplateData, TemplateType } from "@/types";
 import { API_ROUTES } from "@/constants";
 import { api } from "@/utils";
+import { useTemplateDraft } from "@/hooks/useTemplateDraft";
 
 interface UseTemplateManagementResult {
   // 数据状态
@@ -64,6 +65,9 @@ export const useTemplateManagement = (): UseTemplateManagementResult => {
     type: "success" | "error";
     message: string;
   } | null>(null);
+
+  // 草稿管理 - 使用当前选中模板的ID，如果是新建则为undefined
+  const draftManager = useTemplateDraft(selectedTemplate?.templateId);
 
   // 加载模板列表
   const loadTemplates = async () => {
@@ -135,6 +139,8 @@ export const useTemplateManagement = (): UseTemplateManagementResult => {
         setAlert({ type: "success", message: "模板保存成功" });
         setIsEditing(false);
         setSelectedTemplate(null);
+        // 保存成功后清除草稿
+        draftManager.clearDraft();
         loadTemplates();
       } else {
         throw new Error(response.error || "保存失败");

@@ -12,7 +12,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
-
+  
   if (loading) {
     return (
       <Box

@@ -39,7 +39,27 @@
     "allEntries": "All Entries",
     "subjectPreview": "Subject",
     "htmlPreview": "HTML Preview",
-    "textPreview": "Text Preview"
+    "textPreview": "Text Preview",
+    "draftFound": "Unsaved Draft Found",
+    "draftFoundMessage": "We detected unsaved changes from a previous session. Would you like to restore them?",
+    "draftInfo": "Draft Information",
+    "draftRestored": "Draft restored successfully",
+    "restoreDraft": "Restore Draft",
+    "ignoreDraft": "Ignore Draft",
+    "untitled": "Untitled",
+    "notSet": "Not Set",
+    "author": "Author",
+    "tags": "Tags",
+    "tagsHelper": "Separate multiple tags with commas",
+    "htmlPlaceholder": "Enter HTML email content, use variables like {{variableName}}",
+    "textPlaceholder": "Enter plain text email content, use variables like {{variableName}}",
+    "checkFormErrors": "Please check form errors",
+    "completeTemplateInfo": "Please complete template information",
+    "createNew": "Create New Template",
+    "editTemplate": "Edit Template",
+    "deleteTemplate": "Delete Template",
+    "deleteConfirmWithName": "Are you sure you want to delete template \"{{name}}\"?",
+    "selectTemplateMessage": "Please select or create a template from the left sidebar"
   },
   "templateTypes": {
     "VERIFICATION": "Email Verification",
@@ -105,5 +125,12 @@
     "deleteSuccess": "Template deleted successfully",
     "loadError": "Failed to load data",
     "saveError": "Failed to save template"
+  },
+  "preview": {
+    "livePreview": "Live Preview",
+    "realtime": "Real-time",
+    "variablesUsed": "Variables Used",
+    "noContent": "No preview content",
+    "loading": "Loading..."
   }
 }

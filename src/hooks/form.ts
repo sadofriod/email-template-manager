@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { Variable, TemplateData } from "@/types";
 import { validation, template } from "@/utils";
+import { useTemplateDraft } from "@/hooks/useTemplateDraft";
 
 // 表单状态管理 Hook
 export const useFormState = <T extends Record<string, any>>(
@@ -101,6 +102,9 @@ export const useVariables = (initialVariables: Variable[] = []) => {
 
 // 模板编辑器 Hook
 export const useTemplateEditor = (initialTemplate?: Partial<TemplateData>) => {
+  const templateId = initialTemplate?.templateId;
+  const draftManager = useTemplateDraft(templateId);
+
   const formState = useFormState({
     templateId: initialTemplate?.templateId || "",
     name: initialTemplate?.name || "",
@@ -117,6 +121,40 @@ export const useTemplateEditor = (initialTemplate?: Partial<TemplateData>) => {
   });
 
   const variableState = useVariables(initialTemplate?.variables);
+
+  // 自动保存草稿
+  useEffect(() => {
+    const { values } = formState;
+    
+    // 只有在有实际内容时才保存
+    if (values.templateId || values.name || values.htmlContent || values.textContent) {
+      const draftData: Partial<TemplateData> = {
+        templateId: values.templateId,
+        type: values.type,
+        name: values.name,
+        appEntry: values.appEntry,
+        from: values.from,
+        subject: values.subject,
+        htmlContent: values.htmlContent,
+        textContent: values.textContent,
+        variables: variableState.variables,
+        metadata: {
+          id: values.templateId,
+          name: values.name,
+          description: values.description,
+          version: values.version,
+          author: values.author,
+          tags: values.tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter((tag) => tag.length > 0),
+        },
+      };
+
+      // 防抖保存，延迟1秒
+      draftManager.autoSaveDraft(draftData, 1000);
+    }
+  }, [formState.values, variableState.variables, draftManager, formState]);
 
   const validateForm = useCallback(() => {
     const { values } = formState;
@@ -193,5 +231,6 @@ export const useTemplateEditor = (initialTemplate?: Partial<TemplateData>) => {
     validateForm,
     buildTemplateData,
     reset,
+    draftManager,
   };
 };

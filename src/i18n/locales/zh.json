@@ -39,7 +39,27 @@
     "allEntries": "所有入口",
     "subjectPreview": "主题",
     "htmlPreview": "HTML预览",
-    "textPreview": "文本预览"
+    "textPreview": "文本预览",
+    "draftFound": "发现未保存的草稿",
+    "draftFoundMessage": "检测到之前未保存的编辑内容，是否恢复？",
+    "draftInfo": "草稿信息",
+    "draftRestored": "草稿已恢复",
+    "restoreDraft": "恢复草稿",
+    "ignoreDraft": "忽略草稿",
+    "untitled": "未命名",
+    "notSet": "未设置",
+    "author": "作者",
+    "tags": "标签",
+    "tagsHelper": "多个标签请用逗号分隔",
+    "htmlPlaceholder": "输入HTML邮件内容，可使用变量如 {{variableName}}",
+    "textPlaceholder": "输入纯文本邮件内容，可使用变量如 {{variableName}}",
+    "checkFormErrors": "请检查表单错误",
+    "completeTemplateInfo": "请完善模板信息",
+    "createNew": "创建新模板",
+    "editTemplate": "编辑模板",
+    "deleteTemplate": "删除模板",
+    "deleteConfirmWithName": "确定要删除模板 \"{{name}}\" 吗？",
+    "selectTemplateMessage": "请从左侧选择或创建一个模板"
   },
   "templateTypes": {
     "VERIFICATION": "邮箱验证",
@@ -105,5 +125,12 @@
     "deleteSuccess": "模板删除成功",
     "loadError": "数据加载失败",
     "saveError": "模板保存失败"
+  },
+  "preview": {
+    "livePreview": "实时预览",
+    "realtime": "实时",
+    "variablesUsed": "使用的变量",
+    "noContent": "暂无预览内容",
+    "loading": "加载中..."
   }
 }

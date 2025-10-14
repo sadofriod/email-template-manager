@@ -89,12 +89,12 @@ class AuthService {
     this.setError(null);
 
     try {
-      const { data } = await api.post<{ user: User; token: string }>(
+      const data = (await api.post<{ user: User; token: string }>(
         API_ROUTES.AUTH.LOGIN,
         { email, password },
-      );
-      console.log("Login response data:", data?.user.role);
-
+      )) as any;
+      console.log("Login response data:", data);
+      
       // 检查管理员权限
       if (data?.user.role === "ADMIN") {
         this.setUser(data.user);

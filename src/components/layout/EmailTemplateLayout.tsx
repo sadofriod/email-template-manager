@@ -1,4 +1,5 @@
 import type React from "react";
+import { useState } from "react";
 import { Box, Alert, Snackbar } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
@@ -16,6 +17,9 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 export const EmailTemplateLayout: React.FC = () => {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
+  
+  // 当前编辑的数据状态（用于实时预览）
+  const [currentEditingData, setCurrentEditingData] = useState<Partial<TemplateData> | undefined>(undefined);
 
   const {
     // 数据状态
@@ -72,6 +76,12 @@ export const EmailTemplateLayout: React.FC = () => {
   const handleCancelEdit = () => {
     setIsEditing(false);
     setSelectedTemplate(null);
+    setCurrentEditingData(undefined);
+  };
+
+  // 处理内容变化（用于实时预览）
+  const handleContentChange = (data: Partial<TemplateData>) => {
+    setCurrentEditingData(data);
   };
 
   return (
@@ -100,6 +110,8 @@ export const EmailTemplateLayout: React.FC = () => {
         onSaveTemplate={handleSaveTemplate}
         onCancelEdit={handleCancelEdit}
         onPreviewTemplate={handlePreviewTemplate}
+        currentEditingData={currentEditingData}
+        onContentChange={handleContentChange}
       />
 
       {/* 预览模态框 */}
